@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>632eaeaf-bf64-49d3-a3ec-296315c51073</UserSecretsId>
+    <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+    <Platforms>AnyCPU;x86</Platforms>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\Feature.Assets\Feature.Assets.csproj" />
+    <ProjectReference Include="..\Feature.Auth\Feature.Auth.csproj" />
+    <ProjectReference Include="..\Feature.Stocks\Feature.Stocks.csproj" />
+  </ItemGroup>
+
+</Project>
