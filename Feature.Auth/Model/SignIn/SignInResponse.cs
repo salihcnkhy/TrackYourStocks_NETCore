@@ -10,5 +10,7 @@ namespace Feature.Auth.Model.SignIn
     public class SignInResponse : Response
     {
         public string UserID { get; set; }
+        public string UserToken { get; set; }
+
     }
 }
