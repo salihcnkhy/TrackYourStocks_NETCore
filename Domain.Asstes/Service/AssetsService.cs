@@ -1,5 +1,7 @@
 ﻿using Core.Base;
+using Core.Cache;
 using Core.Firebase;
+using Core.Firebase.Auth.Model;
 using Domain.Assets.Model;
 using System;
 using System.Collections.Generic;
@@ -11,18 +13,12 @@ namespace Domain.Assets.Service
 {
     public class AssetsService: ApiService
     {
-        public async Task<GetAssetInformationServiceResponse> GetMinimizedAssetInformation(GetAssetInformationServiceRequest request)
+
+        public async Task<GetAssetInformationServiceResponse> GetAssetInformation(GetAssetInformationServiceRequest request)
         {
             var service = new FirebaseService();
-            var firebaseResponse = await service.GetMinimizedAssets();
-            
-            return null;
-        }
-
-        public Task<GetAssetInformationServiceResponse> GetAssetInformation(GetAssetInformationServiceRequest request)
-        {
-
-            return null;
+            var firebasePortfolioListResponse = await service.GetUserPortfolioList(new UserFirebaseModel { ID = request.UserID });
+            return new GetAssetInformationServiceResponse(firebasePortfolioListResponse);
         }
     }
 }
