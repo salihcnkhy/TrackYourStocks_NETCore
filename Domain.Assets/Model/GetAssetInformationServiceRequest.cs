@@ -9,5 +9,7 @@ namespace Domain.Assets.Model
     public class GetAssetInformationServiceRequest
     {
         public string UserID { get; set; }
+        public string UserToken { get; set; }
+
     }
 }

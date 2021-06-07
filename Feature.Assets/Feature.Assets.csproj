@@ -7,6 +7,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
-    <ProjectReference Include="..\Domain.Asstes\Domain.Assets.csproj" />
+    <ProjectReference Include="..\Domain.Assets\Domain.Assets.csproj" />
   </ItemGroup>
 </Project>

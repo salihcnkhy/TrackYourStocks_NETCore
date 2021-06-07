@@ -1,4 +1,5 @@
 ﻿using Core.Base;
+using Core.Extensions;
 using Domain.Auth.Model;
 using Domain.Auth.Service;
 using Feature.Auth.Model.SignIn;
@@ -19,7 +20,7 @@ namespace Feature.Auth.UseCase
             {
                 SignUpServiceRequest signUpServiceRequest = new SignUpServiceRequest() { Email = request.Email, Password = request.Password };
                 var apiResponse = await Api.SignUp(signUpServiceRequest);
-                SignUpResponse signUpResponse = new SignUpResponse() { Success = apiResponse.Success, UserID = apiResponse.UserID };
+                SignUpResponse signUpResponse = new SignUpResponse() { Success = apiResponse.UserID.IsNotNullOrEmpty(), UserID = apiResponse.UserID, UserToken = apiResponse.UserToken };
                 return signUpResponse;
             }
             catch(Exception e)
@@ -34,7 +35,7 @@ namespace Feature.Auth.UseCase
             {
                 SignInServiceRequest signInServiceRequest = new SignInServiceRequest() { Email = request.Email, Password = request.Password };
                 var apiResponse = await Api.SignIn(signInServiceRequest);
-                SignInResponse signInResponse = new SignInResponse() { Success = apiResponse.Success, UserID = apiResponse.UserID };
+                SignInResponse signInResponse = new SignInResponse() { Success = apiResponse.UserID.IsNotNullOrEmpty(), UserID = apiResponse.UserID, UserToken = apiResponse.UserToken };
                 return signInResponse;
             }
             catch (Exception e)
