@@ -15,13 +15,14 @@ namespace Domain.Auth.Service
         {
             var service = new FirebaseService();
             var response = await service.SignUp(request.Email, request.Password);
-            return new SignUpServiceResponse() { Success = true, UserID = response.User.LocalId };
+            return new SignUpServiceResponse() { UserID = response.ID, UserToken = response.LastSignedToken };
         }
+
         public async Task<SignInServiceResponse> SignIn(SignInServiceRequest request)
         {
             var service = new FirebaseService();
             var response = await service.SignIn(request.Email, request.Password);
-            return new SignInServiceResponse() { Success = true, UserID = response.User.LocalId };
+            return new SignInServiceResponse() { UserID = response.ID, UserToken = response.LastSignedToken };
         }
     }
 }

@@ -12,13 +12,16 @@ namespace Feature.Assets.UseCase
     {
         public async Task<GetAssetInformationResponse> GetAssetInformation(GetAssetInformationRequest request)
         {
-            if(request.UserID.IsNullOrEmpty())
+            if(request.UserID.IsNullOrEmpty() || request.UserToken.IsNullOrEmpty())
             {
                 return new GetAssetInformationResponse();
             }
 
-            var serviceResponse = await Api.GetAssetInformation(new GetAssetInformationServiceRequest() { UserID = request.UserID });
-            return new GetAssetInformationResponse(serviceResponse);
+            var serviceResponse = await Api.GetAssetInformation(new GetAssetInformationServiceRequest() { UserID = request.UserID, UserToken = request.UserToken });
+            if (serviceResponse != null)
+                return new GetAssetInformationResponse(serviceResponse);
+            else
+                return new GetAssetInformationResponse();
         }
     }
 }
