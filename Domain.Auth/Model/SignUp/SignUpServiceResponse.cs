@@ -8,7 +8,8 @@ namespace Domain.Auth.Model
 {
     public class SignUpServiceResponse
     {
-        public bool Success { get; set; }
         public string UserID { get; set; }
+        public string UserToken { get; set; }
+
     }
 }

@@ -17,8 +17,11 @@ namespace Domain.Assets.Service
         public async Task<GetAssetInformationServiceResponse> GetAssetInformation(GetAssetInformationServiceRequest request)
         {
             var service = new FirebaseService();
-            var firebasePortfolioListResponse = await service.GetUserPortfolioList(new UserFirebaseModel { ID = request.UserID });
-            return new GetAssetInformationServiceResponse(firebasePortfolioListResponse);
+            var firebasePortfolioListResponse = await service.GetUserPortfolioList(request.UserID, request.UserToken);
+            if (firebasePortfolioListResponse != null)
+                return new GetAssetInformationServiceResponse(firebasePortfolioListResponse);
+            else
+                return null;
         }
     }
 }

@@ -10,5 +10,6 @@ namespace Feature.Auth.Model.SignUp
     public class SignUpResponse : Response
     {
         public string UserID { get; set; }
+        public string UserToken { get; set; }
     }
 }
