@@ -9,5 +9,6 @@ namespace Feature.Assets.Model.GetAsset
 {
     public class GetAssetInformationRequest : Request
     {
+        public string UserID { get; set; }
     }
 }

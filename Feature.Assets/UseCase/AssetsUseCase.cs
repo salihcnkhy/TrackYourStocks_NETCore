@@ -1,4 +1,5 @@
 ﻿using Core.Base;
+using Core.Extensions;
 using Domain.Assets.Model;
 using Domain.Assets.Service;
 using Feature.Assets.Model.GetAsset;
@@ -9,10 +10,15 @@ namespace Feature.Assets.UseCase
 {
     public class AssetsUseCase : UseCase<AssetsService>
     {
-        public async Task<GetAssetInformationResponse> GetMinimizedAssetInformation(GetAssetInformationRequest request)
+        public async Task<GetAssetInformationResponse> GetAssetInformation(GetAssetInformationRequest request)
         {
-            await Api.GetMinimizedAssetInformation(new GetAssetInformationServiceRequest());
-            return null;
+            if(request.UserID.IsNullOrEmpty())
+            {
+                return new GetAssetInformationResponse();
+            }
+
+            var serviceResponse = await Api.GetAssetInformation(new GetAssetInformationServiceRequest() { UserID = request.UserID });
+            return new GetAssetInformationResponse(serviceResponse);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Core.Base;
+using Domain.Assets.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,24 @@ namespace Feature.Assets.Model.GetAsset
 {
     public class GetAssetInformationResponse : Response
     {
+        public List<GetAssetInformationPortfolioValueObject> PortfolioValueObjects { get; set; }
+        public double TotalBoughtPrice { get; set; }
+        public double TotalCurrentAsset { get; set; }
+        public double CurrentProfit { get; set; }
+        public double CurrentProfitRate { get; set; }
+        public GetAssetInformationResponse(GetAssetInformationServiceResponse serviceResponse)
+        {
+            PortfolioValueObjects = serviceResponse.PortfolioServiceValues.Select(item => new GetAssetInformationPortfolioValueObject(item)).ToList();
+            TotalBoughtPrice = serviceResponse.TotalBoughtPrice;
+            TotalCurrentAsset = serviceResponse.TotalCurrentAsset;
+            CurrentProfit = serviceResponse.CurrentProfit;
+            CurrentProfitRate = serviceResponse.CurrentProfitRate;
+            Success = true;
+        }
+
+        public GetAssetInformationResponse()
+        {
+            Success = false;
+        }
     }
 }
