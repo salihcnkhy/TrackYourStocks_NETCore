@@ -18,6 +18,7 @@ namespace Feature.Auth.Controller
         {
             return SendAsyncRequest<SignUpRequest, SignUpResponse, SignUpHandler>(request);
         }
+
         [HttpPost("SignIn")]
         public Task<SignInResponse> SignIn([FromBody] SignInRequest request)
         {

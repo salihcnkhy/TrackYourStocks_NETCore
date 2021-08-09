@@ -20,28 +20,51 @@ namespace Feature.Auth.UseCase
             {
                 SignUpServiceRequest signUpServiceRequest = new SignUpServiceRequest() { Email = request.Email, Password = request.Password };
                 var apiResponse = await Api.SignUp(signUpServiceRequest);
-                SignUpResponse signUpResponse = new SignUpResponse() { Success = apiResponse.UserID.IsNotNullOrEmpty(), UserID = apiResponse.UserID, UserToken = apiResponse.UserToken };
+          
+                SignUpResponse signUpResponse = new SignUpResponse() 
+                { 
+                    Success = apiResponse.UserID.IsNotNullOrEmpty(),
+                    UserID = apiResponse.UserID, 
+                    UserToken = apiResponse.UserToken 
+                };
+
                 return signUpResponse;
             }
-            catch(Exception e)
+            catch(Firebase.Auth.FirebaseAuthException e)
             {
+                SignUpResponse signUpResponse = new SignUpResponse()
+                {
+                    Success = false,
+                    ErrorReason = e.Reason.ToString()
+                };
 
-                return null;
+            return signUpResponse;
             }
         }
+
         public async Task<SignInResponse> SignIn(SignInRequest request)
         {
             try
             {
                 SignInServiceRequest signInServiceRequest = new SignInServiceRequest() { Email = request.Email, Password = request.Password };
                 var apiResponse = await Api.SignIn(signInServiceRequest);
-                SignInResponse signInResponse = new SignInResponse() { Success = apiResponse.UserID.IsNotNullOrEmpty(), UserID = apiResponse.UserID, UserToken = apiResponse.UserToken };
+                SignInResponse signInResponse = new SignInResponse() 
+                { 
+                    Success = apiResponse.UserID.IsNotNullOrEmpty(), 
+                    UserID = apiResponse.UserID,
+                    UserToken = apiResponse.UserToken
+                };
                 return signInResponse;
             }
-            catch (Exception e)
+            catch (Firebase.Auth.FirebaseAuthException e)
             {
+                SignInResponse signInResponse = new SignInResponse()
+                {
+                    Success = false,
+                    ErrorReason = e.Reason.ToString()
+                };
 
-                return null;
+                return signInResponse;
             }
         }
     }

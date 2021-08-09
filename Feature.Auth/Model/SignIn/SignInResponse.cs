@@ -1,4 +1,5 @@
 ﻿using Core.Base;
+using Firebase.Auth;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,6 @@ namespace Feature.Auth.Model.SignIn
     {
         public string UserID { get; set; }
         public string UserToken { get; set; }
-
+        public string ErrorReason { get; set; }
     }
 }
