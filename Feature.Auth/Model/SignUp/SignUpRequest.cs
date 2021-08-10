@@ -9,6 +9,7 @@ namespace Feature.Auth.Model.SignUp
 {
     public class SignUpRequest : Request
     {
+        public string UserName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
     }

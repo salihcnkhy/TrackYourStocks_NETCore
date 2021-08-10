@@ -41,6 +41,7 @@ namespace Core.Firebase
                     bool appFetched = (bool)dict["appFetched"];
                     if (appFetched || IsFirstRequest)
                     {
+                        Console.WriteLine("Cache Fetched");
                         IsFirstRequest = false;
                         var service = new FirebaseService();
                         service.GetStocks();

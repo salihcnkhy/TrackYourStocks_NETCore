@@ -6,7 +6,6 @@ namespace Core.Base
 {
     public abstract class Response: IResponse
     {
-        public bool Success { get; set; }
-
+        public bool IsSuccess { get; set; }
     }
 }
