@@ -23,7 +23,7 @@ namespace Feature.Auth.UseCase
           
                 SignUpResponse signUpResponse = new SignUpResponse() 
                 { 
-                    Success = apiResponse.UserID.IsNotNullOrEmpty(),
+                    IsSuccess = apiResponse.UserID.IsNotNullOrEmpty(),
                     UserID = apiResponse.UserID, 
                     UserToken = apiResponse.UserToken 
                 };
@@ -34,8 +34,8 @@ namespace Feature.Auth.UseCase
             {
                 SignUpResponse signUpResponse = new SignUpResponse()
                 {
-                    Success = false,
-                    ErrorReason = e.Reason.ToString()
+                    IsSuccess = false,
+                    ErrorReason = e.Reason
                 };
 
             return signUpResponse;
@@ -50,7 +50,7 @@ namespace Feature.Auth.UseCase
                 var apiResponse = await Api.SignIn(signInServiceRequest);
                 SignInResponse signInResponse = new SignInResponse() 
                 { 
-                    Success = apiResponse.UserID.IsNotNullOrEmpty(), 
+                    IsSuccess = apiResponse.UserID.IsNotNullOrEmpty(), 
                     UserID = apiResponse.UserID,
                     UserToken = apiResponse.UserToken
                 };
@@ -60,8 +60,8 @@ namespace Feature.Auth.UseCase
             {
                 SignInResponse signInResponse = new SignInResponse()
                 {
-                    Success = false,
-                    ErrorReason = e.Reason.ToString()
+                    IsSuccess = false,
+                    ErrorReason = e.Reason
                 };
 
                 return signInResponse;

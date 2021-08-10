@@ -22,12 +22,12 @@ namespace Feature.Assets.Model.GetAsset
             TotalCurrentAsset = serviceResponse.TotalCurrentAsset;
             CurrentProfit = serviceResponse.CurrentProfit;
             CurrentProfitRate = serviceResponse.CurrentProfitRate;
-            Success = true;
+            IsSuccess = true;
         }
 
         public GetAssetInformationResponse()
         {
-            Success = false;
+            IsSuccess = false;
         }
     }
 }

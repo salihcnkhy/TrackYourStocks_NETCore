@@ -17,7 +17,7 @@ namespace Feature.Stocks.Model
         {
             ValueObjects = serviceResponse.ValueObjects.Select(element => new GetStocksValueObject(element)).ToList();
             IsContinue = serviceResponse.IsContinue;
-            Success = serviceResponse.Success;
+            IsSuccess = serviceResponse.Success;
         }
     }
 }

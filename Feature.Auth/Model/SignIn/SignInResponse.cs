@@ -12,6 +12,6 @@ namespace Feature.Auth.Model.SignIn
     {
         public string UserID { get; set; }
         public string UserToken { get; set; }
-        public string ErrorReason { get; set; }
+        public AuthErrorReason ErrorReason { get; set; }
     }
 }
