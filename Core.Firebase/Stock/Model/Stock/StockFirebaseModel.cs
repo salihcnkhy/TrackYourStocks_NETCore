@@ -38,6 +38,8 @@ namespace Core.Firebase.Model
         [FirestoreProperty("day_min")]
         public double DayMin { get; set; }
 
+        public List<StockDayFirebaseModel> StockDayFirebaseModelList { get; set; }
+
         public StockCacheModel GetStockCacheModel()
         {
             return new StockCacheModel()
@@ -50,8 +52,27 @@ namespace Core.Firebase.Model
                 DayMax = DayMax,
                 DayMin = DayMin,
                 FullName = FullName,
-                ShortName = ShortName
+                ShortName = ShortName,
+                StockDayCacheModelList = StockDayFirebaseModelList.Select(m => new StockDayCacheModel()
+                {
+                    Day = m.Day,
+                    LastBuying = m.LastBuying,
+                    LastSelling = m.LastSelling
+                }).ToList()
             };
         }
+    }
+
+    [FirestoreData]
+    public class StockDayFirebaseModel
+    {
+        [FirestoreProperty("last_buying")]
+        public double LastBuying { get; set; }
+
+        [FirestoreProperty("last_selling")]
+        public double LastSelling { get; set; }
+
+        [FirestoreProperty("day")]
+        public string Day { get; set; }
     }
 }

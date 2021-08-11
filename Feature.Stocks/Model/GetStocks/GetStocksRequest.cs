@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Feature.Stocks.Model
 {
-    public class GetStocksRequest: Request
+    public class GetStocksRequest: AuthRequiredRequest
     {
         public string StartAfterCode { get; set; }
         public int PageSize { get; set; }

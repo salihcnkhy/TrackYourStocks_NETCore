@@ -19,9 +19,18 @@ namespace Core.Firebase
             FirestoreDb db = FirebaseHelper.Shared.Db;
             var query = db.Collection("Stocks").OrderBy("code");
             var snapshots = await query.GetSnapshotAsync();
-            await db.Collection("Constants").Document("AppFetch").UpdateAsync(new Dictionary<string, object> { { "appFetched", false } });
-            List<StockFirebaseModel> stocks = snapshots.Documents.ToList().Select(document => document.ConvertTo<StockFirebaseModel>()).ToList();
+
+            List<StockFirebaseModel> stocks = (await Task.WhenAll(snapshots.Documents.ToList()
+                .Select(async document =>
+                {
+                    var stockModel = document.ConvertTo<StockFirebaseModel>();
+                    var daySnapshots = await document.Reference.Collection("Days").OrderByDescending("day").Limit(20).GetSnapshotAsync();
+                    stockModel.StockDayFirebaseModelList = daySnapshots.Documents.Select(dayDocument => dayDocument.ConvertTo<StockDayFirebaseModel>()).ToList();
+                    return stockModel;
+                }))).Where(result => result != null).ToList();
+
             StocksCache.Shared.CachedStocks = stocks.Select(s => s.GetStockCacheModel()).ToList();
+            await db.Collection("Constants").Document("AppFetch").UpdateAsync(new Dictionary<string, object> { { "appFetched", false } });
         }
 
         public async Task<UserFirebaseModel> SignUp(string email, string password)
@@ -56,7 +65,7 @@ namespace Core.Firebase
         public async Task<List<PortfolioFirebaseModel>> GetUserPortfolioList(string userID, string userToken)
         {
             var userTokenCheck = await CheckUserSignToken(userID, userToken);
-            if (!userTokenCheck) return null;
+            if (!userTokenCheck) return null; // TODO Client'ı logout yapması için error gönder.
 
             FirestoreDb db = FirebaseHelper.Shared.Db;
             var portfolioRef = db.Collection("Users").Document(userID).Collection("Portfolio");
@@ -75,7 +84,6 @@ namespace Core.Firebase
         public async Task<bool> CheckUserSignToken(string userID, string userToken)
         {
             FirestoreDb db = FirebaseHelper.Shared.Db;
-
             var userSnapshot = await db.Collection(FirestoreCollection.Users.Value()).Document(userID).GetSnapshotAsync();
             var userFirebaseModel = userSnapshot.ConvertTo<UserFirebaseModel>();
             if (userFirebaseModel == null) return false;

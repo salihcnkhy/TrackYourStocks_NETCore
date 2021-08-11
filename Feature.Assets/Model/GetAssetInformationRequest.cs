@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 
 namespace Feature.Assets.Model.GetAsset
 {
-    public class GetAssetInformationRequest : Request
+    public class GetAssetInformationRequest : AuthRequiredRequest
     {
-        public string UserID { get; set; }
     }
 }

@@ -8,36 +8,18 @@ using System.Threading.Tasks;
 
 namespace Domain.Stocks.Model
 {
-    [FirestoreData]
     public class GetStocksServiceValueObject
     {
-        [FirestoreProperty("code")]
         public string Code { get; set; }
-
-        [FirestoreProperty("full_name")]
         public string FullName { get; set; }
-
-        [FirestoreProperty("short_name")]
         public string ShortName { get; set; }
-
-        [FirestoreProperty("current_buying")]
         public double CurrentBuying { get; set; }
-
-        [FirestoreProperty("current_selling")]
         public double CurrentSelling { get; set; }
-
-        [FirestoreProperty("current_change")]
         public double CurrentChange { get; set; }
-
-        [FirestoreProperty("current_change_rate")]
         public double CurrentChangeRate { get; set; }
-
-        [FirestoreProperty("day_max")]
         public double DayMax { get; set; }
-
-        [FirestoreProperty("day_min")]
         public double DayMin { get; set; }
-
+        public List<StockDayInfoServiceValueObject> StocksDayServiceValueObjectList { get; set; }
 
         public GetStocksServiceValueObject(StockCacheModel cacheModel)
         {
@@ -50,6 +32,19 @@ namespace Domain.Stocks.Model
             CurrentChangeRate = cacheModel.CurrentChangeRate;
             DayMax = cacheModel.DayMax;
             DayMin = cacheModel.DayMin;
+            StocksDayServiceValueObjectList = cacheModel.StockDayCacheModelList.Select(m => new StockDayInfoServiceValueObject()
+            {
+                Day = m.Day,
+                LastBuying = m.LastBuying,
+                LastSelling = m.LastSelling,
+            }).ToList();
         }
+    }
+
+    public class StockDayInfoServiceValueObject
+    {
+        public double LastBuying { get; set; }
+        public double LastSelling { get; set; }
+        public string Day { get; set; }
     }
 }

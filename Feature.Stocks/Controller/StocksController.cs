@@ -11,16 +11,10 @@ namespace Feature.Stocks.Controller
 {
     public class StocksController: ApiController
     {
-        [HttpPost("GetStocks")]
-        public Task<GetStocksResponse> GetStocks([FromBody] GetStocksRequest request)
+        [HttpPost("AllStocks")]
+        public Task<GetStocksResponse> AllStocks([FromBody] GetStocksRequest request)
         {
-            return SendAsyncRequest<GetStocksRequest, GetStocksResponse, GetStocksHandler>(request);
-        }
-
-        [HttpGet("AllStocks")]
-        public Task<GetStocksResponse> AllStocks()
-        {
-            return SendAsyncRequest<GetStocksRequest, GetStocksResponse, GetAllStocksHandler>(null);
+            return SendAsyncRequest<GetStocksRequest, GetStocksResponse, GetAllStocksHandler>(request);
         }
     }
 }

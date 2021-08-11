@@ -12,17 +12,16 @@ namespace Feature.Stocks.UseCase
 {
     public class StocksUseCase : UseCase<StocksService>
     {
-        public GetStocksResponse GetCachedStocks(GetStocksRequest request)
+        public async Task<GetStocksResponse> GetAllCachedStocks(GetStocksRequest request)
         {
-            GetStocksServiceRequest serviceRequest = new GetStocksServiceRequest { StartAfterCode = request.StartAfterCode, PageSize = request.PageSize };
-            var apiResponse = Api.GetCachedStocks(serviceRequest);
-            GetStocksResponse stocksResponse = new GetStocksResponse(apiResponse);
-            return stocksResponse;
-        }
-
-        public GetStocksResponse GetAllCachedStocks()
-        {
-            var apiResponse = Api.GetAllCachedStocks();
+            var serviceRequest = new GetStocksServiceRequest()
+            {
+                UserID = request.UserID,
+                UserToken = request.UserToken,
+                PageSize = request.PageSize,
+                StartAfterCode = request.StartAfterCode
+            };
+            var apiResponse = await Api.GetAllCachedStocks(serviceRequest);
             GetStocksResponse stocksResponse = new GetStocksResponse(apiResponse);
             return stocksResponse;
         }

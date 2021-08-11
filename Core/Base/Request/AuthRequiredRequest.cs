@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Core.Base
 {
-    public abstract class Request : IRequest
+    public abstract class AuthRequiredRequest : Request
     {
+        public string UserToken { get; set; }
+        public string UserID { get; set; }
     }
 }

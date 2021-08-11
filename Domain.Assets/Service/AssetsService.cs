@@ -13,7 +13,6 @@ namespace Domain.Assets.Service
 {
     public class AssetsService: ApiService
     {
-
         public async Task<GetAssetInformationServiceResponse> GetAssetInformation(GetAssetInformationServiceRequest request)
         {
             var service = new FirebaseService();

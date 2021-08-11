@@ -11,11 +11,11 @@ namespace Feature.Stocks.Model
     public class GetStocksResponse : Response
     {
         public bool IsContinue { get; set; }
-        public List<GetStocksValueObject> ValueObjects { get; set; }
+        public List<GetStocksValueObject> StockList { get; set; }
 
         public GetStocksResponse(GetStocksServiceResponse serviceResponse)
         {
-            ValueObjects = serviceResponse.ValueObjects.Select(element => new GetStocksValueObject(element)).ToList();
+            StockList = serviceResponse.ValueObjects.Select(element => new GetStocksValueObject(element)).ToList();
             IsContinue = serviceResponse.IsContinue;
             IsSuccess = serviceResponse.Success;
         }
