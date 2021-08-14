@@ -17,10 +17,7 @@ namespace Domain.Assets.Service
         {
             var service = new FirebaseService();
             var firebasePortfolioListResponse = await service.GetUserPortfolioList(request.UserID, request.UserToken);
-            if (firebasePortfolioListResponse != null)
-                return new GetAssetInformationServiceResponse(firebasePortfolioListResponse);
-            else
-                return null;
+            return new GetAssetInformationServiceResponse() { PortfolioFirebaseModelList = firebasePortfolioListResponse };
         }
     }
 }

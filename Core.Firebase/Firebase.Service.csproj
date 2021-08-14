@@ -9,6 +9,6 @@
     <PackageReference Include="Google.Cloud.Firestore" Version="2.1.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Cache.Stocks\Cache.Stocks.csproj" />
+    <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
 </Project>

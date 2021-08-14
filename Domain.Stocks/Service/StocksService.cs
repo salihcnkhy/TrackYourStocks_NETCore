@@ -13,5 +13,12 @@ namespace Domain.Stocks.Service
             var cachedStocks = await stocksHelper.GetCachedStocks(request);
             return cachedStocks;
         }
+
+        public async Task<GetStockDayInfoServiceResponse> GetStockPastDateInformation(GetStockDayInfoServiceRequest request)
+        {
+            StocksHelper stocksHelper = new StocksHelper();
+            var stockDayInfo = await stocksHelper.GetStockDayInformation(request);
+            return stockDayInfo;
+        }
     }
 }

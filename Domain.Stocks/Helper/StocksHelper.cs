@@ -1,5 +1,6 @@
 ﻿using Core.Cache;
 using Core.Firebase;
+using Core.Firebase.Model;
 using Domain.Stocks.Model;
 using System;
 using System.Collections.Generic;
@@ -14,10 +15,8 @@ namespace Domain.Stocks.Helper
         public async Task<GetStocksServiceResponse> GetCachedStocks(GetStocksServiceRequest request)
         {
             var firebaseService = new FirebaseService();
-            var isTokenAlive = await firebaseService.CheckUserSignToken(request.UserID, request.UserToken);
-            if (!isTokenAlive) return new GetStocksServiceResponse();
+            var cachedStocks = await firebaseService.GetCachedStocks(request.UserID, request.UserToken);
 
-            var cachedStocks = StocksCache.Shared.CachedStocks;
             GetStocksServiceResponse response = null;
             if (cachedStocks != null)
             {
@@ -29,6 +28,25 @@ namespace Domain.Stocks.Helper
                     response = GetFilteredResponse(request, response);
             }
             return response;
+        }
+
+        public async Task<GetStockDayInfoServiceResponse> GetStockDayInformation(GetStockDayInfoServiceRequest request)
+        {
+            var firebaseService = new FirebaseService();
+            var stockInfoRequest = new StockDayInformationRequest
+            {
+                Code = request.Code,
+                Date = request.Date,
+            };
+
+            var response = await firebaseService.GetStockDayInformation(stockInfoRequest);
+            if (response == null) return null; // TODO: if returns null try next day maybe??
+            return new GetStockDayInfoServiceResponse
+            {
+                Day = response.Day,
+                LastBuying = response.LastBuying,
+                LastSelling = response.LastSelling,
+            };
         }
 
         private GetStocksServiceResponse GetFilteredResponse(GetStocksServiceRequest request, GetStocksServiceResponse response)

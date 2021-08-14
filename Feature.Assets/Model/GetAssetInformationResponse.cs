@@ -10,24 +10,21 @@ namespace Feature.Assets.Model.GetAsset
 {
     public class GetAssetInformationResponse : Response
     {
-        public List<GetAssetInformationPortfolioValueObject> PortfolioValueObjects { get; set; }
-        public double TotalBoughtPrice { get; set; }
+        public List<AssetStockInformationModel> AssetStockInformations { get; set; }
+        public List<AssetProfitInformation> AssetProfitInformations { get; set; }
         public double TotalCurrentAsset { get; set; }
-        public double CurrentProfit { get; set; }
-        public double CurrentProfitRate { get; set; }
-        public GetAssetInformationResponse(GetAssetInformationServiceResponse serviceResponse)
-        {
-            PortfolioValueObjects = serviceResponse.PortfolioServiceValues.Select(item => new GetAssetInformationPortfolioValueObject(item)).ToList();
-            TotalBoughtPrice = serviceResponse.TotalBoughtPrice;
-            TotalCurrentAsset = serviceResponse.TotalCurrentAsset;
-            CurrentProfit = serviceResponse.CurrentProfit;
-            CurrentProfitRate = serviceResponse.CurrentProfitRate;
-            IsSuccess = true;
-        }
 
         public GetAssetInformationResponse()
         {
-            IsSuccess = false;
+            AssetStockInformations = new List<AssetStockInformationModel>();
+            AssetProfitInformations = new List<AssetProfitInformation>();
         }
+    }
+
+    public class AssetProfitInformation
+    {
+        public string Title { get; set; }
+        public double ProfitRate { get; set; }
+        public double ProfitValue { get; set; }
     }
 }

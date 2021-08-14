@@ -5,7 +5,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\Core.Firebase\Core.Firebase.csproj" />
+    <ProjectReference Include="..\Core.Firebase\Firebase.Service.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
 

@@ -9,9 +9,11 @@ namespace Core.Firebase
     public class FirebaseHelper
     {
         private static FirebaseHelper _shared;
+
         private bool IsFirstRequest = true;
         public FirestoreDb Db;
         public FirebaseAuthProvider Auth;
+        public string FirebaseDate;
         public static FirebaseHelper Shared
         {
             get
@@ -44,7 +46,7 @@ namespace Core.Firebase
                         Console.WriteLine("Cache Fetched");
                         IsFirstRequest = false;
                         var service = new FirebaseService();
-                        service.GetStocks();
+                        service.FetchStocks();
                     }
                 }
             });
