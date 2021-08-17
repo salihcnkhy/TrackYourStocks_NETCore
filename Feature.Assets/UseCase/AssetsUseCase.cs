@@ -30,10 +30,6 @@ namespace Feature.Assets.UseCase
 
             if (serviceResponse != null || stocks != null)
             {
-                if (serviceResponse.PortfolioFirebaseModelList.Count == 0)
-                {
-                    return new GetAssetInformationResponse();
-                }
 
                 var totalCurrentAsset = 0.0;
                 var totalOneDayBeforeAsset = 0.0;
@@ -80,50 +76,47 @@ namespace Feature.Assets.UseCase
 
                 var assetProfitList = new List<AssetProfitInformation>();
 
-                if (totalBoughtPrice != 0)
+                var currentProfit = totalCurrentAsset - totalBoughtPrice;
+                var currentProfitRate = 100 * (totalCurrentAsset - totalBoughtPrice) / totalBoughtPrice == 0 ? 1 : totalBoughtPrice;
+
+                var oneDayBeforeProfit = totalOneDayBeforeAsset - totalBoughtPrice;
+                var oneDayBeforeProfitRate = 100 * (totalOneDayBeforeAsset - totalBoughtPrice) / totalBoughtPrice == 0 ? 1 : totalBoughtPrice;
+
+                var oneWeekBeforeProfit = totalOneWeekBeforeAsset - totalBoughtPrice;
+                var oneWeekBeforeProfitRate = 100 * (totalOneWeekBeforeAsset - totalBoughtPrice) / totalBoughtPrice == 0 ? 1 : totalBoughtPrice;
+
+                var oneMounthBeforeProfit = totalOneMounthBeforeAsset - totalBoughtPrice;
+                var oneMounthBeforeProfitRate = 100 * (totalOneMounthBeforeAsset - totalBoughtPrice) / totalBoughtPrice == 0 ? 1 : totalBoughtPrice;
+
+                var currentAssetProfitInformation = new AssetProfitInformation
                 {
-                    var currentProfit = totalCurrentAsset - totalBoughtPrice;
-                    var currentProfitRate = 100 * (totalCurrentAsset - totalBoughtPrice) / totalBoughtPrice;
+                    Title = "Toplam",
+                    ProfitRate = Math.Round(currentProfitRate, 2, MidpointRounding.AwayFromZero),
+                    ProfitValue = Math.Round(currentProfit, 2, MidpointRounding.AwayFromZero),
+                };
+                var oneDayBeforeAssetProfitInformation = new AssetProfitInformation
+                {
+                    Title = "Dün",
+                    ProfitRate = Math.Round(oneDayBeforeProfitRate, 2, MidpointRounding.AwayFromZero),
+                    ProfitValue = Math.Round(oneDayBeforeProfit, 2, MidpointRounding.AwayFromZero),
+                };
+                var oneWeekAssetProfitInformation = new AssetProfitInformation
+                {
+                    Title = "1 Hafta",
+                    ProfitRate = Math.Round(oneWeekBeforeProfitRate, 2, MidpointRounding.AwayFromZero),
+                    ProfitValue = Math.Round(oneWeekBeforeProfit, 2, MidpointRounding.AwayFromZero),
+                };
+                var oneMounthAssetProfitInformation = new AssetProfitInformation
+                {
+                    Title = "1 Ay",
+                    ProfitRate = Math.Round(oneMounthBeforeProfitRate, 2, MidpointRounding.AwayFromZero),
+                    ProfitValue = Math.Round(oneMounthBeforeProfit, 2, MidpointRounding.AwayFromZero),
+                };
 
-                    var oneDayBeforeProfit = totalOneDayBeforeAsset - totalBoughtPrice;
-                    var oneDayBeforeProfitRate = 100 * (totalOneDayBeforeAsset - totalBoughtPrice) / totalBoughtPrice;
-
-                    var oneWeekBeforeProfit = totalOneWeekBeforeAsset - totalBoughtPrice;
-                    var oneWeekBeforeProfitRate = 100 * (totalOneWeekBeforeAsset - totalBoughtPrice) / totalBoughtPrice;
-
-                    var oneMounthBeforeProfit = totalOneMounthBeforeAsset - totalBoughtPrice;
-                    var oneMounthBeforeProfitRate = 100 * (totalOneMounthBeforeAsset - totalBoughtPrice) / totalBoughtPrice;
-
-                    var currentAssetProfitInformation = new AssetProfitInformation
-                    {
-                        Title = "Toplam",
-                        ProfitRate = Math.Round(currentProfitRate, 2, MidpointRounding.AwayFromZero),
-                        ProfitValue = Math.Round(currentProfit, 2, MidpointRounding.AwayFromZero),
-                    };
-                    var oneDayBeforeAssetProfitInformation = new AssetProfitInformation
-                    {
-                        Title = "Dün",
-                        ProfitRate = Math.Round(oneDayBeforeProfitRate, 2, MidpointRounding.AwayFromZero),
-                        ProfitValue = Math.Round(oneDayBeforeProfit, 2, MidpointRounding.AwayFromZero),
-                    };
-                    var oneWeekAssetProfitInformation = new AssetProfitInformation
-                    {
-                        Title = "1 Hafta",
-                        ProfitRate = Math.Round(oneWeekBeforeProfitRate, 2, MidpointRounding.AwayFromZero),
-                        ProfitValue = Math.Round(oneWeekBeforeProfit, 2, MidpointRounding.AwayFromZero),
-                    };
-                    var oneMounthAssetProfitInformation = new AssetProfitInformation
-                    {
-                        Title = "1 Ay",
-                        ProfitRate = Math.Round(oneMounthBeforeProfitRate, 2, MidpointRounding.AwayFromZero),
-                        ProfitValue = Math.Round(oneMounthBeforeProfit, 2, MidpointRounding.AwayFromZero),
-                    };
-
-                    assetProfitList.Add(currentAssetProfitInformation);
-                    assetProfitList.Add(oneDayBeforeAssetProfitInformation);
-                    assetProfitList.Add(oneWeekAssetProfitInformation);
-                    assetProfitList.Add(oneMounthAssetProfitInformation);
-                }
+                assetProfitList.Add(currentAssetProfitInformation);
+                assetProfitList.Add(oneDayBeforeAssetProfitInformation);
+                assetProfitList.Add(oneWeekAssetProfitInformation);
+                assetProfitList.Add(oneMounthAssetProfitInformation);
 
                 var assetStockInformationList = serviceResponse.PortfolioFirebaseModelList.Select(portfolioStock =>
                 {

@@ -5,6 +5,10 @@ using Core.Firebase.Auth.Model;
 using Core.Firebase.Enum;
 using Core.Firebase.Model;
 using Firebase.Auth;
+using Firebase.Service.Models;
+using Firebase.Service.Models.Alarms;
+using Firebase.Service.Models.MarketHistory;
+using Firebase.Service.Models.Notification;
 using Google.Cloud.Firestore;
 using System;
 using System.Collections.Generic;
@@ -15,6 +19,8 @@ namespace Core.Firebase
 {
     public class FirebaseService
     {
+
+        #region Stock
         public async void FetchStocks()
         {
             FirestoreDb db = FirebaseHelper.Shared.Db;
@@ -42,12 +48,15 @@ namespace Core.Firebase
             var snapshot = await query.GetSnapshotAsync();
             return snapshot.ConvertTo<StockDayFirebaseModel>();
         }
-
-        public async Task<List<StockCacheModel>> GetCachedStocks(string userID, string userToken)
+        public async Task<List<StockCacheModel>> GetCachedStocks(FirestoreGeneralRequest request)
         {
-            await CheckUserSignToken(userID, userToken);
+            await CheckUserSignToken(request);
             return StocksCache.Shared.CachedStocks;
         }
+        #endregion
+
+        #region Auth
+
 
         public async Task<UserFirebaseModel> SignUp(string email, string password)
         {
@@ -78,12 +87,12 @@ namespace Core.Firebase
             return new UserFirebaseModel() { ID = response.User.LocalId, LastSignedToken = generatedToken };
         }
 
-        public async Task<List<PortfolioFirebaseModel>> GetUserPortfolioList(string userID, string userToken)
+        public async Task<List<PortfolioFirebaseModel>> GetUserPortfolioList(FirestoreGeneralRequest request)
         {
-            await CheckUserSignToken(userID, userToken);
+            await CheckUserSignToken(request);
 
             FirestoreDb db = FirebaseHelper.Shared.Db;
-            var portfolioRef = db.Collection(FirestoreCollection.Users.Value()).Document(userID).Collection(FirestoreCollection.Portfolio.Value());
+            var portfolioRef = db.Collection(FirestoreCollection.Users.Value()).Document(request.UserID).Collection(FirestoreCollection.Portfolio.Value());
             var portfolioStockSnapshot = await portfolioRef.GetSnapshotAsync();
             List<PortfolioFirebaseModel> portfolioStockList = portfolioStockSnapshot.Documents.ToList().Select(doc => doc.ConvertTo<PortfolioFirebaseModel>()).ToList();
             return portfolioStockList;
@@ -96,13 +105,52 @@ namespace Core.Firebase
         /// Pass => ID & LastSignedToken
         /// </param>
         /// <returns></returns>
-        private async Task CheckUserSignToken(string userID, string userToken)
+        private async Task CheckUserSignToken(FirestoreGeneralRequest request)
         {
             FirestoreDb db = FirebaseHelper.Shared.Db;
-            var userSnapshot = await db.Collection(FirestoreCollection.Users.Value()).Document(userID).GetSnapshotAsync();
+            var userSnapshot = await db.Collection(FirestoreCollection.Users.Value()).Document(request.UserID).GetSnapshotAsync();
             var userFirebaseModel = userSnapshot.ConvertTo<UserFirebaseModel>();
             if (userFirebaseModel == null) throw new Exception(); // TODO: Throw UserNotFound Exception
-            if (!userFirebaseModel.LastSignedToken.Equals(userToken)) throw new Exception(); // TODO: Throw TokenUnvalid Exception
+            if (!userFirebaseModel.LastSignedToken.Equals(request.UserToken)) throw new Exception(); // TODO: Throw TokenUnvalid Exception
         }
+        #endregion
+
+        #region User
+
+        public async Task<List<AlarmFirebaseModel>> GetActiveAlarms(FirestoreGeneralRequest request)
+        {
+            await CheckUserSignToken(request);
+            var db = FirebaseHelper.Shared.Db;
+
+            var query = db.Collection(FirestoreCollection.Users.Value()).Document(request.UserID).Collection(FirestoreCollection.Alarms.Value());
+            var alarmSnapshots = await query.GetSnapshotAsync();
+
+            var alarms = alarmSnapshots.Select(s => s.ConvertTo<AlarmFirebaseModel>()).ToList();
+            return alarms;
+        }
+
+        public async Task<List<NotificationFirebaseModel>> GetNotifications(FirestoreGeneralRequest request)
+        {
+            await CheckUserSignToken(request);
+            var db = FirebaseHelper.Shared.Db;
+            var query = db.Collection(FirestoreCollection.Users.Value()).Document(request.UserID).Collection(FirestoreCollection.Notifications.Value());
+            var notificationSnapshots = await query.GetSnapshotAsync();
+
+            var notifications = notificationSnapshots.Select(s => s.ConvertTo<NotificationFirebaseModel>()).ToList();
+            return notifications;
+        }
+
+        public async Task<List<MarketHistoryFirebaseModel>> GetMarketHistory(FirestoreGeneralRequest request)
+        {
+            await CheckUserSignToken(request);
+            var db = FirebaseHelper.Shared.Db;
+            var query = db.Collection(FirestoreCollection.Users.Value()).Document(request.UserID).Collection(FirestoreCollection.MarketHistory.Value());
+            var marketHistorySnapshots = await query.GetSnapshotAsync();
+
+            var marketHistoryList = marketHistorySnapshots.Select(s => s.ConvertTo<MarketHistoryFirebaseModel>()).ToList();
+            return marketHistoryList;
+        }
+
+        #endregion
     }
 }

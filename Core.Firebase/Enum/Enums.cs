@@ -17,6 +17,10 @@ namespace Core.Firebase.Enum
                 case FirestoreCollection.Constants: return "Constants";
                 case FirestoreCollection.Days: return "Days";
                 case FirestoreCollection.Portfolio: return "Portfolio";
+                case FirestoreCollection.Alarms: return "Alarms";
+                case FirestoreCollection.MarketHistory: return "MarketHistory";
+                case FirestoreCollection.Notifications: return "Notifications";
+
                 default: return String.Empty;
             }
         }
@@ -28,5 +32,9 @@ namespace Core.Firebase.Enum
         Constants,
         Days,
         Portfolio,
+        Alarms,
+        MarketHistory,
+        Notifications,
+
     }
 }
