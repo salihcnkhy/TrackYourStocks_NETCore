@@ -3,6 +3,7 @@ using Core.Cache;
 using Core.Firebase;
 using Core.Firebase.Auth.Model;
 using Domain.Assets.Model;
+using Firebase.Service.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace Domain.Assets.Service
         public async Task<GetAssetInformationServiceResponse> GetAssetInformation(GetAssetInformationServiceRequest request)
         {
             var service = new FirebaseService();
-            var firebasePortfolioListResponse = await service.GetUserPortfolioList(request.UserID, request.UserToken);
+            var firebasePortfolioListResponse = await service.GetUserPortfolioList(new FirestoreGeneralRequest { UserID = request.UserID, UserToken = request.UserToken });
             return new GetAssetInformationServiceResponse() { PortfolioFirebaseModelList = firebasePortfolioListResponse };
         }
     }

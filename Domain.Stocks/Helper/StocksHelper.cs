@@ -2,6 +2,7 @@
 using Core.Firebase;
 using Core.Firebase.Model;
 using Domain.Stocks.Model;
+using Firebase.Service.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace Domain.Stocks.Helper
         public async Task<GetStocksServiceResponse> GetCachedStocks(GetStocksServiceRequest request)
         {
             var firebaseService = new FirebaseService();
-            var cachedStocks = await firebaseService.GetCachedStocks(request.UserID, request.UserToken);
+            var cachedStocks = await firebaseService.GetCachedStocks(new FirestoreGeneralRequest { UserID = request.UserID, UserToken = request.UserToken });
 
             GetStocksServiceResponse response = null;
             if (cachedStocks != null)
