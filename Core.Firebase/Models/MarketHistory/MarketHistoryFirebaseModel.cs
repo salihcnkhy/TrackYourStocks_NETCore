@@ -22,9 +22,6 @@ namespace Firebase.Service.Models.MarketHistory
         [FirestoreProperty("process_type")]
         public int ProcessType { get; set; }
 
-        [FirestoreProperty("trigger_price")]
-        public string TriggerPrice { get; set; }
-
         [FirestoreProperty("date")]
         public Timestamp Date { get; set; }
 

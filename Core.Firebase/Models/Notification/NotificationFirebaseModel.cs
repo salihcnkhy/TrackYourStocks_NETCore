@@ -26,7 +26,7 @@ namespace Firebase.Service.Models.Notification
         [FirestoreProperty("date")]
         public Timestamp Date { get; set; }
 
-        [FirestoreProperty("ic_name")]
+        [FirestoreProperty("icon_name")]
         public string IconName { get; set; }
     }
 }

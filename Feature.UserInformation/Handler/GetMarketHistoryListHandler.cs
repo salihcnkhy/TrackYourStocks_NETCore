@@ -9,7 +9,7 @@ namespace Feature.UserInformation.Handler
     {
         public Task<MarketHistoryListResponse> Handle(MarketHistoryListRequest request)
         {
-            throw new System.NotImplementedException();
+            return UseCase.GetMarketHistoryList(request);
         }
     }
 }

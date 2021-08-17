@@ -17,6 +17,8 @@
     <ProjectReference Include="..\Feature.Assets\Feature.Assets.csproj" />
     <ProjectReference Include="..\Feature.Auth\Feature.Auth.csproj" />
     <ProjectReference Include="..\Feature.Stocks\Feature.Stocks.csproj" />
+    <ProjectReference Include="..\Feature.UserInformation\Feature.UserInformation.csproj" />
+
   </ItemGroup>
 
 </Project>

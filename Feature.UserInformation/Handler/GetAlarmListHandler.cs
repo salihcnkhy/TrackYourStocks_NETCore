@@ -9,7 +9,7 @@ namespace Feature.UserInformation.Handler
     {
         public Task<AlarmListResponse> Handle(AlarmListRequest request)
         {
-            throw new System.NotImplementedException();
+            return UseCase.GetAlarmList(request);
         }
     }
 }
