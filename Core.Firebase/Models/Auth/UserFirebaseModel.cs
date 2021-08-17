@@ -18,5 +18,9 @@ namespace Core.Firebase.Auth.Model
 
         [FirestoreProperty("lastSignedToken")]
         public string LastSignedToken { get; set; }
+
+        [FirestoreProperty("favorite_stoks")]
+        public List<string> FavoriteStocks { get; set; }
+
     }
 }

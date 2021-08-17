@@ -36,7 +36,10 @@ namespace Core.Firebase
                     return stockModel;
                 }))).Where(result => result != null).ToList();
             var appFetchSnapshot = await db.Collection(FirestoreCollection.Constants.Value()).Document("AppFetch").GetSnapshotAsync();
-            FirebaseHelper.Shared.FirebaseDate = appFetchSnapshot.GetValue<string>("currentDay");
+          
+            FirebaseHelper.Shared.FirebaseDateStr = appFetchSnapshot.GetValue<string>("currentDay");
+            FirebaseHelper.Shared.AvailableDates = appFetchSnapshot.GetValue<List<string>>("available_date_list").Select(d => DateTime.Parse(d)).ToList();
+ 
             StocksCache.Shared.CachedStocks = stocks.Select(s => s.GetStockCacheModel()).ToList();
             await appFetchSnapshot.Reference.UpdateAsync(new Dictionary<string, object> { { "appFetched", false } });
         }
@@ -117,6 +120,16 @@ namespace Core.Firebase
 
         #region User
 
+        public async Task<List<string>> GetFavoriteStockCodes(FirestoreGeneralRequest request)
+        {
+            await CheckUserSignToken(request);
+            var db = FirebaseHelper.Shared.Db;
+
+            var query = db.Collection(FirestoreCollection.Users.Value()).Document(request.UserID);
+            var snapshot = await query.GetSnapshotAsync();
+            List<string> favoriteStocks = snapshot.GetValue<List<string>>("favorite_stoks");
+            return favoriteStocks;
+        }
         public async Task<List<AlarmFirebaseModel>> GetActiveAlarms(FirestoreGeneralRequest request)
         {
             await CheckUserSignToken(request);

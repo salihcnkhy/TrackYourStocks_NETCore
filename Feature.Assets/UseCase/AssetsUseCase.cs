@@ -43,22 +43,33 @@ namespace Feature.Assets.UseCase
                     var currentStock = stocks.ValueObjects.First(s => s.Code == portfolioStock.Code);
                     if (currentStock == null) continue;
 
+                    var oneDayBeforeDate = DateTime.Parse(FirebaseHelper.Shared.FirebaseDateStr).AddDays(-1);
+                    var oneWeekBeforeDate = DateTime.Parse(FirebaseHelper.Shared.FirebaseDateStr).AddDays(-7);
+                    var oneMountBeforeDate = DateTime.Parse(FirebaseHelper.Shared.FirebaseDateStr).AddMonths(-1);
+
+                    var availableDates = FirebaseHelper.Shared.AvailableDates;
+
+                    oneDayBeforeDate = oneDayBeforeDate.GetNearestPastAvailableDate(availableDates);
+                    oneWeekBeforeDate = oneWeekBeforeDate.GetNearestPastAvailableDate(availableDates);
+                    oneMountBeforeDate = oneMountBeforeDate.GetNearestPastAvailableDate(availableDates);
+
+
                     var oneDayBeforeRequest = new GetStockDayInfoServiceRequest
                     {
                         Code = portfolioStock.Code,
-                        Date = (DateTime.Parse(FirebaseHelper.Shared.FirebaseDate).AddDays(-1)).ToString("yyyy-MM-dd"),
+                        Date = oneDayBeforeDate.ToString("yyyy-MM-dd"),
                     };
 
                     var oneWeekBeforeRequest = new GetStockDayInfoServiceRequest
                     {
                         Code = portfolioStock.Code,
-                        Date = (DateTime.Parse(FirebaseHelper.Shared.FirebaseDate).AddDays(-7)).ToString("yyyy-MM-dd"),
+                        Date = oneWeekBeforeDate.ToString("yyyy-MM-dd"),
                     };
 
                     var oneMounthBeforeRequest = new GetStockDayInfoServiceRequest
                     {
                         Code = portfolioStock.Code,
-                        Date = (DateTime.Parse(FirebaseHelper.Shared.FirebaseDate).AddMonths(-1)).ToString("yyyy-MM-dd"),
+                        Date = oneMountBeforeDate.ToString("yyyy-MM-dd"),
                     };
 
                     var oneDayBeforeStockInfo = await stockService.GetStockPastDateInformation(oneDayBeforeRequest);
@@ -77,20 +88,20 @@ namespace Feature.Assets.UseCase
                 var assetProfitList = new List<AssetProfitInformation>();
 
                 var currentProfit = totalCurrentAsset - totalBoughtPrice;
-                var currentProfitRate = 100 * (totalCurrentAsset - totalBoughtPrice) / totalBoughtPrice == 0 ? 1 : totalBoughtPrice;
+                var currentProfitRate =  (100 *currentProfit) / (totalBoughtPrice == 0 ? 1.0 : totalBoughtPrice);
 
                 var oneDayBeforeProfit = totalOneDayBeforeAsset - totalBoughtPrice;
-                var oneDayBeforeProfitRate = 100 * (totalOneDayBeforeAsset - totalBoughtPrice) / totalBoughtPrice == 0 ? 1 : totalBoughtPrice;
+                var oneDayBeforeProfitRate =  (100 * oneDayBeforeProfit) / (totalBoughtPrice == 0 ? 1.0 : totalBoughtPrice);
 
                 var oneWeekBeforeProfit = totalOneWeekBeforeAsset - totalBoughtPrice;
-                var oneWeekBeforeProfitRate = 100 * (totalOneWeekBeforeAsset - totalBoughtPrice) / totalBoughtPrice == 0 ? 1 : totalBoughtPrice;
+                var oneWeekBeforeProfitRate = (100 * oneWeekBeforeProfit) / (totalBoughtPrice == 0 ? 1.0 : totalBoughtPrice);
 
                 var oneMounthBeforeProfit = totalOneMounthBeforeAsset - totalBoughtPrice;
-                var oneMounthBeforeProfitRate = 100 * (totalOneMounthBeforeAsset - totalBoughtPrice) / totalBoughtPrice == 0 ? 1 : totalBoughtPrice;
+                var oneMounthBeforeProfitRate = (100 * oneMounthBeforeProfit) / (totalBoughtPrice == 0 ? 1.0 : totalBoughtPrice);
 
                 var currentAssetProfitInformation = new AssetProfitInformation
                 {
-                    Title = "Toplam",
+                    Title = "Şu an",
                     ProfitRate = Math.Round(currentProfitRate, 2, MidpointRounding.AwayFromZero),
                     ProfitValue = Math.Round(currentProfit, 2, MidpointRounding.AwayFromZero),
                 };

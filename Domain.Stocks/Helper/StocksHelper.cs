@@ -16,14 +16,15 @@ namespace Domain.Stocks.Helper
         public async Task<GetStocksServiceResponse> GetCachedStocks(GetStocksServiceRequest request)
         {
             var firebaseService = new FirebaseService();
-            var cachedStocks = await firebaseService.GetCachedStocks(new FirestoreGeneralRequest { UserID = request.UserID, UserToken = request.UserToken });
-
+            var firebaseRequest = new FirestoreGeneralRequest { UserID = request.UserID, UserToken = request.UserToken };
+            var cachedStocks = await firebaseService.GetCachedStocks(firebaseRequest);
+            var favoriteStokcs = await firebaseService.GetFavoriteStockCodes(firebaseRequest);
             GetStocksServiceResponse response = null;
             if (cachedStocks != null)
             {
                 response = new GetStocksServiceResponse()
                 {
-                    ValueObjects = cachedStocks.Select(s => new GetStocksServiceValueObject(s)).ToList()
+                    ValueObjects = cachedStocks.Select(s => new GetStocksServiceValueObject(s, favoriteStokcs)).ToList()
                 };
                 if (request != null && request.PageSize > 0)
                     response = GetFilteredResponse(request, response);

@@ -20,8 +20,9 @@ namespace Domain.Stocks.Model
         public double DayMax { get; set; }
         public double DayMin { get; set; }
         public List<GetStockDayInfoServiceResponse> StocksDayServiceValueObjectList { get; set; }
+        public bool IsFavorite { get; set; }
 
-        public GetStocksServiceValueObject(StockCacheModel cacheModel)
+        public GetStocksServiceValueObject(StockCacheModel cacheModel, List<string> userFavoriteStockList)
         {
             Code = cacheModel.Code;
             FullName = cacheModel.FullName;
@@ -38,6 +39,7 @@ namespace Domain.Stocks.Model
                 LastBuying = m.LastBuying,
                 LastSelling = m.LastSelling,
             }).ToList();
+            IsFavorite = userFavoriteStockList.Contains(Code);
         }
     }
 }

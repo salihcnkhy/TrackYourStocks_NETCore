@@ -49,7 +49,6 @@ namespace Feature.UserInformation.UseCase
                     UnitPrice = a.UnitPrice,
                     Id = a.Id,
                     LongName = a.LongName,
-                    TriggerPrice = a.TriggerPrice,
                 }).ToList()
             };
 
