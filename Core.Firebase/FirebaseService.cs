@@ -38,10 +38,8 @@ namespace Core.Firebase
             var appFetchSnapshot = await db.Collection(FirestoreCollection.Constants.Value()).Document("AppFetch").GetSnapshotAsync();
           
             FirebaseHelper.Shared.FirebaseDateStr = appFetchSnapshot.GetValue<string>("currentDay");
-            FirebaseHelper.Shared.AvailableDates = appFetchSnapshot.GetValue<List<string>>("available_date_list").Select(d => DateTime.Parse(d)).ToList();
- 
+            FirebaseHelper.Shared.AvailableDates = appFetchSnapshot.GetValue<List<string>>("available_date_list").Select(d => DateTime.Parse(d)).ToList(); 
             StocksCache.Shared.CachedStocks = stocks.Select(s => s.GetStockCacheModel()).ToList();
-            await appFetchSnapshot.Reference.UpdateAsync(new Dictionary<string, object> { { "appFetched", false } });
         }
 
         public async Task<StockDayFirebaseModel> GetStockDayInformation(StockDayInformationRequest request)

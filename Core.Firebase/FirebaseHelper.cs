@@ -36,7 +36,7 @@ namespace Core.Firebase
         {
             DocumentReference docRef = Db.Collection("Constants").Document("AppFetch");
 
-            FirestoreChangeListener listener = docRef.Listen(snapshot =>
+            FirestoreChangeListener listener = docRef.Listen(async snapshot =>
             {
                 if (snapshot.Exists)
                 {
@@ -44,6 +44,7 @@ namespace Core.Firebase
                     bool appFetched = (bool)dict["appFetched"];
                     if (appFetched || IsFirstRequest)
                     {
+                        await snapshot.Reference.UpdateAsync(new Dictionary<string, object> { { "appFetched", false } });
                         Console.WriteLine("Cache Fetched");
                         IsFirstRequest = false;
                         var service = new FirebaseService();
