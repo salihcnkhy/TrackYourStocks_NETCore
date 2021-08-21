@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Firebase.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,7 @@ namespace Cache.Stocks
         public double DayMax { get; set; }
         public double DayMin { get; set; }
         public List<StockDayCacheModel> StockDayCacheModelList {get; set; }
+        public List<StockProfitDayModel> StockProfitDayModeList { get; set; }
     }
 
     public class StockDayCacheModel

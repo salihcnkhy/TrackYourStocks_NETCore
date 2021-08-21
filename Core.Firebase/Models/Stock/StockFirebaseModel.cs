@@ -40,6 +40,8 @@ namespace Core.Firebase.Model
 
         public List<StockDayFirebaseModel> StockDayFirebaseModelList { get; set; }
 
+        public List<StockProfitDayModel> StockProfitDayFirebaseModel { get; set; }
+
         public StockCacheModel GetStockCacheModel()
         {
             return new StockCacheModel()
@@ -74,5 +76,12 @@ namespace Core.Firebase.Model
 
         [FirestoreProperty("day")]
         public string Day { get; set; }
+    }
+
+    public class StockProfitDayModel
+    {
+        public double Protif { get; set; }
+        public double ProtifRate { get; set; }
+        public string Title { get; set; }
     }
 }

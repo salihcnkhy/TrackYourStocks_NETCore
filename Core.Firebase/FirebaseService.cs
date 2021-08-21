@@ -1,5 +1,6 @@
 ﻿using Cache.Stocks;
 using Core.Cache;
+using Core.Extensions;
 using Core.Firebase.Assets.Model;
 using Core.Firebase.Auth.Model;
 using Core.Firebase.Enum;
@@ -27,25 +28,102 @@ namespace Core.Firebase
             var query = db.Collection(FirestoreCollection.Stokcs.Value()).OrderBy("code");
             var snapshots = await query.GetSnapshotAsync();
 
+            var appFetchSnapshot = await db.Collection(FirestoreCollection.Constants.Value()).Document("AppFetch").GetSnapshotAsync();
+            FirebaseHelper.Shared.FirebaseDateStr = appFetchSnapshot.GetValue<string>("currentDay");
+            FirebaseHelper.Shared.AvailableDates = appFetchSnapshot.GetValue<List<string>>("available_date_list").Select(d => DateTime.Parse(d)).ToList();
+
             List<StockFirebaseModel> stocks = (await Task.WhenAll(snapshots.Documents.ToList()
                 .Select(async document =>
                 {
                     var stockModel = document.ConvertTo<StockFirebaseModel>();
-                    var daySnapshots = await document.Reference.Collection(FirestoreCollection.Days.Value()).OrderByDescending("day").Limit(20).GetSnapshotAsync();
+                    var dayRef = document.Reference.Collection(FirestoreCollection.Days.Value());
+                    var daySnapshots = await dayRef.OrderByDescending("day").Limit(20).GetSnapshotAsync();
+
+                    var oneWeekBeforeDate = DateTime.Parse(FirebaseHelper.Shared.FirebaseDateStr).AddDays(-7);
+                    var oneMountBeforeDate = DateTime.Parse(FirebaseHelper.Shared.FirebaseDateStr).AddMonths(-1);
+                    var threeMountBeforeDate = DateTime.Parse(FirebaseHelper.Shared.FirebaseDateStr).AddMonths(-3);
+
+                    var availableDates = FirebaseHelper.Shared.AvailableDates;
+
+                    oneWeekBeforeDate = oneWeekBeforeDate.GetNearestPastAvailableDate(availableDates);
+                    oneMountBeforeDate = oneMountBeforeDate.GetNearestPastAvailableDate(availableDates);
+                    threeMountBeforeDate = threeMountBeforeDate.GetNearestPastAvailableDate(availableDates);
+
+                    var oneWeekBeforeRequest = new StockDayInformationRequest
+                    {
+                        Reference = dayRef,
+                        Date = oneWeekBeforeDate.ToString("yyyy-MM-dd"),
+                    };
+
+                    var oneMounthBeforeRequest = new StockDayInformationRequest
+                    {
+                        Reference = dayRef,
+                        Date = oneMountBeforeDate.ToString("yyyy-MM-dd"),
+                    };
+
+                    var threeMounthBeforeRequest = new StockDayInformationRequest
+                    {
+                        Reference = dayRef,
+                        Date = oneMountBeforeDate.ToString("yyyy-MM-dd"),
+                    };
+
+                    var oneWeekBeforeDayInfo = await GetStockDayInformation(oneWeekBeforeRequest);
+                    var oneMounthBeforeDayInfo = await GetStockDayInformation(oneMounthBeforeRequest);
+                    var threeMounthBeforeDayInfo = await GetStockDayInformation(threeMounthBeforeRequest);
+
+                    var oneWeekBeforeDayProfit = stockModel.CurrentSelling - oneWeekBeforeDayInfo.LastSelling;
+                    var oneWeekBeforeDayProfitRate = (100 * oneWeekBeforeDayProfit) / (oneWeekBeforeDayInfo.LastSelling == 0 ? 1.0 : oneWeekBeforeDayInfo.LastSelling);
+
+                    var oneMounthBeforeDayProfit = stockModel.CurrentSelling - oneMounthBeforeDayInfo.LastSelling;
+                    var oneMounthBeforeDayProfitRate = (100 * oneMounthBeforeDayProfit) / (oneMounthBeforeDayInfo.LastSelling == 0 ? 1.0 : oneMounthBeforeDayInfo.LastSelling);
+
+                    var threeMounthBeforeDayProfit = stockModel.CurrentSelling - threeMounthBeforeDayInfo.LastSelling;
+                    var threeMounthBeforeDayProfitRate = (100 * threeMounthBeforeDayProfit) / (threeMounthBeforeDayInfo.LastSelling == 0 ? 1.0 : threeMounthBeforeDayInfo.LastSelling);
+
+                    stockModel.StockProfitDayFirebaseModel = new List<StockProfitDayModel>
+                    {
+                        new StockProfitDayModel
+                        {
+                            Title = "Bugün",
+                            ProtifRate = stockModel.CurrentChangeRate,
+                            Protif = stockModel.CurrentChange
+                        },
+
+                        new StockProfitDayModel
+                        {
+                            Title = "1 Hafta",
+                            ProtifRate = stockModel.CurrentChangeRate,
+                        },
+
+                        new StockProfitDayModel
+                        {
+                            Title = "1 Ay",
+                            ProtifRate = stockModel.CurrentChangeRate,
+                        },
+
+                        new StockProfitDayModel
+                        {
+                            Title = "3 Ay",
+                            ProtifRate = stockModel.CurrentChangeRate,
+                        },
+                    };
+
                     stockModel.StockDayFirebaseModelList = daySnapshots.Documents.Select(dayDocument => dayDocument.ConvertTo<StockDayFirebaseModel>()).ToList();
                     return stockModel;
                 }))).Where(result => result != null).ToList();
-            var appFetchSnapshot = await db.Collection(FirestoreCollection.Constants.Value()).Document("AppFetch").GetSnapshotAsync();
-          
-            FirebaseHelper.Shared.FirebaseDateStr = appFetchSnapshot.GetValue<string>("currentDay");
-            FirebaseHelper.Shared.AvailableDates = appFetchSnapshot.GetValue<List<string>>("available_date_list").Select(d => DateTime.Parse(d)).ToList(); 
+
             StocksCache.Shared.CachedStocks = stocks.Select(s => s.GetStockCacheModel()).ToList();
         }
 
         public async Task<StockDayFirebaseModel> GetStockDayInformation(StockDayInformationRequest request)
         {
-            FirestoreDb db = FirebaseHelper.Shared.Db;
-            var query = db.Collection(FirestoreCollection.Stokcs.Value()).Document(request.Code).Collection(FirestoreCollection.Days.Value()).Document(request.Date);
+            var dayRef = request.Reference;
+            if (dayRef == null)
+            {
+                FirestoreDb db = FirebaseHelper.Shared.Db;
+                dayRef = db.Collection(FirestoreCollection.Stokcs.Value()).Document(request.Code).Collection(FirestoreCollection.Days.Value());
+            }
+            var query = dayRef.Document(request.Date);
             var snapshot = await query.GetSnapshotAsync();
             return snapshot.ConvertTo<StockDayFirebaseModel>();
         }
