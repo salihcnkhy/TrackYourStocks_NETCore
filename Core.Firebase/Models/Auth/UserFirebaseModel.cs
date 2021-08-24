@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Firebase.Auth.Model
+namespace Firebase.Service.Models
 {
     [FirestoreData]
     public class UserFirebaseModel
@@ -19,8 +19,9 @@ namespace Core.Firebase.Auth.Model
         [FirestoreProperty("lastSignedToken")]
         public string LastSignedToken { get; set; }
 
-        [FirestoreProperty("favorite_stoks")]
+        [FirestoreProperty("favorite_stocks")]
         public List<string> FavoriteStocks { get; set; }
 
+        public DocumentReference UserReference { get; set; }
     }
 }

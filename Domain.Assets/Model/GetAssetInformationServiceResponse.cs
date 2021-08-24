@@ -1,6 +1,6 @@
 ﻿using Core.Cache;
 using Core.Extensions;
-using Core.Firebase.Assets.Model;
+using Firebase.Service.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

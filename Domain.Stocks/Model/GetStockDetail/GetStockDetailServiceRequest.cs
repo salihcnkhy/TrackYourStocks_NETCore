@@ -5,9 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Feature.Assets.Model.GetAsset
+namespace Domain.Stocks.Model.GetStockDetail
 {
-    public class GetAssetInformationRequest : AuthRequiredRequest
+    public class GetStockDetailServiceRequest : AuthRequiredRequest
     {
+
     }
 }

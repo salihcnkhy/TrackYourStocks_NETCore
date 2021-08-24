@@ -1,6 +1,7 @@
 ﻿using Core.Base;
 using Feature.UserInformation.Handler;
 using Feature.UserInformation.Model;
+using Feature.UserInformation.Model.Favorite;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -24,10 +25,22 @@ namespace Feature.UserInformation.Controller
             return SendAsyncRequest<NotificationListRequest, NotificationListResponse, GetNotificationListHandler>(request);
         }
 
-        [HttpPost("GetUserMarkerHistoryList")]
+        [HttpPost("GetUserMarketHistoryList")]
         public Task<MarketHistoryListResponse> GetUserMarkerHistoryList([FromBody] MarketHistoryListRequest request)
         {
             return SendAsyncRequest<MarketHistoryListRequest, MarketHistoryListResponse, GetMarketHistoryListHandler>(request);
+        }
+
+        [HttpPost("GetFavoriteList")]
+        public Task<GetFavoriteListResponse> GetFavoriteList([FromBody] GetFavoriteListRequest request)
+        {
+            return SendAsyncRequest<GetFavoriteListRequest, GetFavoriteListResponse, GetFavoriteListHandler>(request);
+        }
+
+        [HttpPost("EditFavorite")]
+        public Task<EditFavoriteResponse> EditFavorite([FromBody] EditFavoriteRequest request)
+        {
+            return SendAsyncRequest<EditFavoriteRequest, EditFavoriteResponse, EditFavoriteHandler>(request);
         }
     }
 }

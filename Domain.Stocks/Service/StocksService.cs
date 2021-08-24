@@ -1,6 +1,7 @@
 ﻿using Core.Base;
 using Domain.Stocks.Helper;
 using Domain.Stocks.Model;
+using Domain.Stocks.Model.GetStockDetail;
 using System.Threading.Tasks;
 
 namespace Domain.Stocks.Service
@@ -19,6 +20,12 @@ namespace Domain.Stocks.Service
             StocksHelper stocksHelper = new StocksHelper();
             var stockDayInfo = await stocksHelper.GetStockDayInformation(request);
             return stockDayInfo;
+        }
+
+        public async Task<GetStockDetailServiceResponse> GetStockDetail(GetStockDetailServiceRequest request)
+        {
+            StocksHelper stocksHelper = new StocksHelper();
+            return null;
         }
     }
 }

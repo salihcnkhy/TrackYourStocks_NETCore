@@ -60,6 +60,12 @@ namespace Core.Firebase.Model
                     Day = m.Day,
                     LastBuying = m.LastBuying,
                     LastSelling = m.LastSelling
+                }).ToList(),
+                StockProfitDayModeList = StockProfitDayFirebaseModel.Select(m => new StockProfitDayModel()
+                {
+                    Protif = m.Protif,
+                    ProtifRate = m.ProtifRate,
+                    Title = m.Title,
                 }).ToList()
             };
         }

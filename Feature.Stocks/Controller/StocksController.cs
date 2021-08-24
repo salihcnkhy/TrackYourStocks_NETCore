@@ -16,5 +16,11 @@ namespace Feature.Stocks.Controller
         {
             return SendAsyncRequest<GetStocksRequest, GetStocksResponse, GetAllStocksHandler>(request);
         }
+
+        [HttpPost("GetStockDetail")]
+        public Task<GetStockDetailResponse> GetStockDetail([FromBody] GetStockDetailRequest request)
+        {
+            return SendAsyncRequest<GetStockDetailRequest, GetStockDetailResponse, GetStockDetailHandler>(request);
+        }
     }
 }

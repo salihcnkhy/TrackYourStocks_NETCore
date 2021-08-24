@@ -1,13 +1,7 @@
 ﻿using Core.Base;
-using Core.Cache;
 using Core.Firebase;
-using Core.Firebase.Auth.Model;
 using Domain.Assets.Model;
 using Firebase.Service.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Domain.Assets.Service

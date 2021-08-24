@@ -58,5 +58,18 @@ namespace Domain.UserInformation.Service
             }).ToList();
             return response;
         }
+
+        public async Task<GetFavoriteListServiceResponse> GetFavoriteList(GetFavoriteListServiceRequest request)
+        {
+            var service = new FirebaseService();
+            var response = await service.GetFavoriteStockCodes(new FirestoreGeneralRequest { UserID = request.UserID, UserToken = request.UserToken });
+            return new GetFavoriteListServiceResponse { FavoriteList = response ?? new List<string>() };
+        }
+
+        public async Task EditFavorite(EditFavoriteServiceRequest request)
+        {
+            var service = new FirebaseService();
+            await service.EditFavorite(new EditFavoriteListRequest { Code = request.Code, UserID =  request.UserID, UserToken = request.UserToken });
+        }
     }
 }

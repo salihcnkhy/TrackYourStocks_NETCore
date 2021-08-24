@@ -2,6 +2,7 @@
 using Core.Firebase;
 using Core.Firebase.Model;
 using Domain.Stocks.Model;
+using Domain.Stocks.Model.GetStockDetail;
 using Firebase.Service.Models;
 using System;
 using System.Collections.Generic;

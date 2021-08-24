@@ -25,5 +25,10 @@ namespace Feature.Stocks.UseCase
             GetStocksResponse stocksResponse = new GetStocksResponse(apiResponse);
             return stocksResponse;
         }
+
+        public async Task<GetStockDetailResponse> GetStockDetail(GetStockDetailRequest request)
+        {
+            return null;
+        } 
     }
 }

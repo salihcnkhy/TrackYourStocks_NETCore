@@ -1,15 +1,10 @@
 ﻿using Cache.Stocks;
 using Core.Cache;
 using Core.Extensions;
-using Core.Firebase.Assets.Model;
-using Core.Firebase.Auth.Model;
 using Core.Firebase.Enum;
 using Core.Firebase.Model;
 using Firebase.Auth;
 using Firebase.Service.Models;
-using Firebase.Service.Models.Alarms;
-using Firebase.Service.Models.MarketHistory;
-using Firebase.Service.Models.Notification;
 using Google.Cloud.Firestore;
 using System;
 using System.Collections.Generic;
@@ -39,94 +34,107 @@ namespace Core.Firebase
                     var dayRef = document.Reference.Collection(FirestoreCollection.Days.Value());
                     var daySnapshots = await dayRef.OrderByDescending("day").Limit(20).GetSnapshotAsync();
 
-                    var oneWeekBeforeDate = DateTime.Parse(FirebaseHelper.Shared.FirebaseDateStr).AddDays(-7);
-                    var oneMountBeforeDate = DateTime.Parse(FirebaseHelper.Shared.FirebaseDateStr).AddMonths(-1);
-                    var threeMountBeforeDate = DateTime.Parse(FirebaseHelper.Shared.FirebaseDateStr).AddMonths(-3);
+                    stockModel.StockDayFirebaseModelList = daySnapshots.Documents.Select(dayDocument => dayDocument.ConvertTo<StockDayFirebaseModel>()).ToList();
 
-                    var availableDates = FirebaseHelper.Shared.AvailableDates;
+                    return stockModel;
+                }))).Where(result => result != null).ToList();
 
-                    oneWeekBeforeDate = oneWeekBeforeDate.GetNearestPastAvailableDate(availableDates);
-                    oneMountBeforeDate = oneMountBeforeDate.GetNearestPastAvailableDate(availableDates);
-                    threeMountBeforeDate = threeMountBeforeDate.GetNearestPastAvailableDate(availableDates);
+            foreach(var stock in stocks)
+            {
+                var oneWeekBeforeDate = DateTime.Parse(FirebaseHelper.Shared.FirebaseDateStr).AddDays(-7);
+                var oneMountBeforeDate = DateTime.Parse(FirebaseHelper.Shared.FirebaseDateStr).AddMonths(-1);
+                var threeMountBeforeDate = DateTime.Parse(FirebaseHelper.Shared.FirebaseDateStr).AddMonths(-3);
 
-                    var oneWeekBeforeRequest = new StockDayInformationRequest
-                    {
-                        Reference = dayRef,
-                        Date = oneWeekBeforeDate.ToString("yyyy-MM-dd"),
-                    };
+                var availableDates = FirebaseHelper.Shared.AvailableDates;
 
-                    var oneMounthBeforeRequest = new StockDayInformationRequest
-                    {
-                        Reference = dayRef,
-                        Date = oneMountBeforeDate.ToString("yyyy-MM-dd"),
-                    };
+                oneWeekBeforeDate = oneWeekBeforeDate.GetNearestPastAvailableDate(availableDates);
+                oneMountBeforeDate = oneMountBeforeDate.GetNearestPastAvailableDate(availableDates);
+                threeMountBeforeDate = threeMountBeforeDate.GetNearestPastAvailableDate(availableDates);
 
-                    var threeMounthBeforeRequest = new StockDayInformationRequest
-                    {
-                        Reference = dayRef,
-                        Date = oneMountBeforeDate.ToString("yyyy-MM-dd"),
-                    };
+                var oneWeekBeforeRequest = new StockDayInformationRequest
+                {
+                    Code = stock.Code,
+                    Date = oneWeekBeforeDate.ToString("yyyy-MM-dd"),
+                };
 
-                    var oneWeekBeforeDayInfo = await GetStockDayInformation(oneWeekBeforeRequest);
-                    var oneMounthBeforeDayInfo = await GetStockDayInformation(oneMounthBeforeRequest);
-                    var threeMounthBeforeDayInfo = await GetStockDayInformation(threeMounthBeforeRequest);
+                var oneMounthBeforeRequest = new StockDayInformationRequest
+                {
+                    Code = stock.Code,
+                    Date = oneMountBeforeDate.ToString("yyyy-MM-dd"),
+                };
 
-                    var oneWeekBeforeDayProfit = stockModel.CurrentSelling - oneWeekBeforeDayInfo.LastSelling;
-                    var oneWeekBeforeDayProfitRate = (100 * oneWeekBeforeDayProfit) / (oneWeekBeforeDayInfo.LastSelling == 0 ? 1.0 : oneWeekBeforeDayInfo.LastSelling);
+                var threeMounthBeforeRequest = new StockDayInformationRequest
+                {
+                    Code = stock.Code,
+                    Date = oneMountBeforeDate.ToString("yyyy-MM-dd"),
+                };
 
-                    var oneMounthBeforeDayProfit = stockModel.CurrentSelling - oneMounthBeforeDayInfo.LastSelling;
-                    var oneMounthBeforeDayProfitRate = (100 * oneMounthBeforeDayProfit) / (oneMounthBeforeDayInfo.LastSelling == 0 ? 1.0 : oneMounthBeforeDayInfo.LastSelling);
+                var oneWeekBeforeDayInfo = await GetStockDayInformation(oneWeekBeforeRequest);
+                var oneMounthBeforeDayInfo = await GetStockDayInformation(oneMounthBeforeRequest);
+                var threeMounthBeforeDayInfo = await GetStockDayInformation(threeMounthBeforeRequest);
 
-                    var threeMounthBeforeDayProfit = stockModel.CurrentSelling - threeMounthBeforeDayInfo.LastSelling;
-                    var threeMounthBeforeDayProfitRate = (100 * threeMounthBeforeDayProfit) / (threeMounthBeforeDayInfo.LastSelling == 0 ? 1.0 : threeMounthBeforeDayInfo.LastSelling);
+                var oneWeekBeforeDayProfit = stock.CurrentSelling - oneWeekBeforeDayInfo?.LastSelling ?? stock.CurrentSelling;
+                var oneWeekBeforeDayProfitRate = (100 * oneWeekBeforeDayProfit) / (oneWeekBeforeDayInfo?.LastSelling == 0 ? 1.0 : oneWeekBeforeDayInfo?.LastSelling ?? 1.0);
 
-                    stockModel.StockProfitDayFirebaseModel = new List<StockProfitDayModel>
+                var oneMounthBeforeDayProfit = stock.CurrentSelling - (oneMounthBeforeDayInfo?.LastSelling ?? stock.CurrentSelling);
+                var oneMounthBeforeDayProfitRate = (100 * oneMounthBeforeDayProfit) / (oneMounthBeforeDayInfo?.LastSelling == 0 ? 1.0 : oneMounthBeforeDayInfo?.LastSelling ?? 1.0);
+
+                var threeMounthBeforeDayProfit = stock.CurrentSelling - threeMounthBeforeDayInfo?.LastSelling ?? stock.CurrentSelling;
+                var threeMounthBeforeDayProfitRate = (100 * threeMounthBeforeDayProfit) / (threeMounthBeforeDayInfo?.LastSelling == 0 ? 1.0 : threeMounthBeforeDayInfo?.LastSelling ?? 1.0);
+
+                stock.StockProfitDayFirebaseModel = new List<StockProfitDayModel>
                     {
                         new StockProfitDayModel
                         {
                             Title = "Bugün",
-                            ProtifRate = stockModel.CurrentChangeRate,
-                            Protif = stockModel.CurrentChange
+                            Protif = stock.CurrentChange,
+                            ProtifRate = stock.CurrentChangeRate,
                         },
 
                         new StockProfitDayModel
                         {
                             Title = "1 Hafta",
-                            ProtifRate = stockModel.CurrentChangeRate,
+                            Protif = oneWeekBeforeDayProfit,
+                            ProtifRate = oneWeekBeforeDayProfitRate,
                         },
 
                         new StockProfitDayModel
                         {
                             Title = "1 Ay",
-                            ProtifRate = stockModel.CurrentChangeRate,
+                            Protif = oneMounthBeforeDayProfit,
+                            ProtifRate = oneMounthBeforeDayProfitRate,
                         },
 
                         new StockProfitDayModel
                         {
                             Title = "3 Ay",
-                            ProtifRate = stockModel.CurrentChangeRate,
+                            Protif = threeMounthBeforeDayProfit,
+                            ProtifRate = threeMounthBeforeDayProfitRate,
                         },
                     };
-
-                    stockModel.StockDayFirebaseModelList = daySnapshots.Documents.Select(dayDocument => dayDocument.ConvertTo<StockDayFirebaseModel>()).ToList();
-                    return stockModel;
-                }))).Where(result => result != null).ToList();
+            }
 
             StocksCache.Shared.CachedStocks = stocks.Select(s => s.GetStockCacheModel()).ToList();
         }
 
         public async Task<StockDayFirebaseModel> GetStockDayInformation(StockDayInformationRequest request)
         {
-            var dayRef = request.Reference;
-            if (dayRef == null)
-            {
-                FirestoreDb db = FirebaseHelper.Shared.Db;
-                dayRef = db.Collection(FirestoreCollection.Stokcs.Value()).Document(request.Code).Collection(FirestoreCollection.Days.Value());
-            }
+            FirestoreDb db = FirebaseHelper.Shared.Db;
+            var dayRef = db.Collection(FirestoreCollection.Stokcs.Value()).Document(request.Code).Collection(FirestoreCollection.Days.Value());
             var query = dayRef.Document(request.Date);
             var snapshot = await query.GetSnapshotAsync();
             return snapshot.ConvertTo<StockDayFirebaseModel>();
         }
+
+        public async Task<StockDayFirebaseModel> GetStockDetail(StockDayInformationRequest request)
+        {
+            FirestoreDb db = FirebaseHelper.Shared.Db;
+            var dayRef = db.Collection(FirestoreCollection.Stokcs.Value()).Document(request.Code).Collection(FirestoreCollection.Days.Value());
+            var query = dayRef.Document(request.Date);
+            var snapshot = await query.GetSnapshotAsync();
+            return snapshot.ConvertTo<StockDayFirebaseModel>();
+        }
+
         public async Task<List<StockCacheModel>> GetCachedStocks(FirestoreGeneralRequest request)
         {
             await CheckUserSignToken(request);
@@ -184,11 +192,12 @@ namespace Core.Firebase
         /// Pass => ID & LastSignedToken
         /// </param>
         /// <returns></returns>
-        private async Task CheckUserSignToken(FirestoreGeneralRequest request)
+        private async Task CheckUserSignToken(FirestoreGeneralRequest request, UserFirebaseModel userFirebaseModel = null)
         {
-            FirestoreDb db = FirebaseHelper.Shared.Db;
-            var userSnapshot = await db.Collection(FirestoreCollection.Users.Value()).Document(request.UserID).GetSnapshotAsync();
-            var userFirebaseModel = userSnapshot.ConvertTo<UserFirebaseModel>();
+            if(userFirebaseModel == null)
+            {
+                userFirebaseModel = await GetUser(request);
+            }
             if (userFirebaseModel == null) throw new Exception(); // TODO: Throw UserNotFound Exception
             if (!userFirebaseModel.LastSignedToken.Equals(request.UserToken)) throw new Exception(); // TODO: Throw TokenUnvalid Exception
         }
@@ -196,16 +205,23 @@ namespace Core.Firebase
 
         #region User
 
+        public async Task<UserFirebaseModel> GetUser(FirestoreGeneralRequest request)
+        {
+            FirestoreDb db = FirebaseHelper.Shared.Db;
+            var userSnapshot = await db.Collection(FirestoreCollection.Users.Value()).Document(request.UserID).GetSnapshotAsync();
+            if(!userSnapshot.Exists) { return null; }
+            var userFirebaseModel = userSnapshot.ConvertTo<UserFirebaseModel>();
+            userFirebaseModel.UserReference = userSnapshot.Reference;
+            return userFirebaseModel;
+        }
+
         public async Task<List<string>> GetFavoriteStockCodes(FirestoreGeneralRequest request)
         {
-            await CheckUserSignToken(request);
-            var db = FirebaseHelper.Shared.Db;
-
-            var query = db.Collection(FirestoreCollection.Users.Value()).Document(request.UserID);
-            var snapshot = await query.GetSnapshotAsync();
-            List<string> favoriteStocks = snapshot.GetValue<List<string>>("favorite_stoks");
-            return favoriteStocks;
+            var userFirebaseModel = await GetUser(request);
+            await CheckUserSignToken(request, userFirebaseModel);
+            return userFirebaseModel.FavoriteStocks;
         }
+
         public async Task<List<AlarmFirebaseModel>> GetActiveAlarms(FirestoreGeneralRequest request)
         {
             await CheckUserSignToken(request);
@@ -238,6 +254,20 @@ namespace Core.Firebase
 
             var marketHistoryList = marketHistorySnapshots.Select(s => s.ConvertTo<MarketHistoryFirebaseModel>()).ToList();
             return marketHistoryList;
+        }
+
+        public async Task EditFavorite(EditFavoriteListRequest request)
+        {
+            var userFirebaseModel = await GetUser(request);
+            await CheckUserSignToken(request, userFirebaseModel);
+            if (request.Code == null) throw new NullReferenceException();
+            if(userFirebaseModel.FavoriteStocks.Contains(request.Code))
+            {
+                await userFirebaseModel.UserReference.UpdateAsync("favorite_stocks", FieldValue.ArrayRemove(request.Code));
+            } else
+            {
+                await userFirebaseModel.UserReference.UpdateAsync("favorite_stocks", FieldValue.ArrayUnion(request.Code));
+            }
         }
 
         #endregion

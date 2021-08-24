@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Firebase.Service.Models.Notification
+namespace Firebase.Service.Models
 {
     [FirestoreData]
     public class NotificationFirebaseModel

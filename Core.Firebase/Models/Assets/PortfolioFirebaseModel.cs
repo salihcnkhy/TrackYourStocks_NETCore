@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Firebase.Assets.Model
+namespace Firebase.Service.Models
 {
     [FirestoreData]
     public class PortfolioFirebaseModel

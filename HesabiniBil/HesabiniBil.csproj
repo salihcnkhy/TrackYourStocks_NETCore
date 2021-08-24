@@ -4,7 +4,6 @@
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>632eaeaf-bf64-49d3-a3ec-296315c51073</UserSecretsId>
     <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
-    <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
   
   <ItemGroup>

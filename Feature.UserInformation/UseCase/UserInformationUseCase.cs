@@ -2,6 +2,7 @@
 using Domain.UserInformation.Model;
 using Domain.UserInformation.Service;
 using Feature.UserInformation.Model;
+using Feature.UserInformation.Model.Favorite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +32,6 @@ namespace Feature.UserInformation.UseCase
 
             return notificationListResponse;
         }
-
 
         public async Task<MarketHistoryListResponse> GetMarketHistoryList(MarketHistoryListRequest request)
         {
@@ -72,6 +72,29 @@ namespace Feature.UserInformation.UseCase
             };
 
             return alarmListResponse;
+        }
+
+        public async Task<GetFavoriteListResponse> GetFavoriteList(GetFavoriteListRequest request)
+        {
+            var responseList = await Api.GetFavoriteList(new GetFavoriteListServiceRequest { UserID = request.UserID, UserToken = request.UserToken });
+            var favoriteListResponse = new GetFavoriteListResponse
+            {
+                IsSuccess = true,
+                FavoriteList = responseList.FavoriteList,
+            };
+
+            return favoriteListResponse;
+        }
+
+        public async Task<EditFavoriteResponse> EditFavorite(EditFavoriteRequest request)
+        {
+            await Api.EditFavorite(new EditFavoriteServiceRequest { Code = request.Code, UserID = request.UserID, UserToken = request.UserToken });
+            var editFavorite = new EditFavoriteResponse
+            {
+                IsSuccess = true,
+            };
+
+            return editFavorite;
         }
     }
 }

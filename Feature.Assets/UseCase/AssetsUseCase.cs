@@ -4,11 +4,10 @@ using Domain.Assets.Model;
 using Domain.Assets.Service;
 using Domain.Stocks.Service;
 using Domain.Stocks.Model;
-using Feature.Assets.Model.GetAsset;
+using Feature.Assets.Model;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
-using Feature.Assets.Model;
 using System;
 using Core.Firebase;
 
