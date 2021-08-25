@@ -77,9 +77,9 @@ namespace Feature.Assets.UseCase
 
 
                     totalCurrentAsset += portfolioStock.StockQuantity * currentStock.CurrentSelling;
-                    totalOneDayBeforeAsset += portfolioStock.StockQuantity * oneDayBeforeStockInfo.LastSelling;
-                    totalOneWeekBeforeAsset += portfolioStock.StockQuantity * oneWeekBeforeStockInfo.LastSelling;
-                    totalOneMounthBeforeAsset += portfolioStock.StockQuantity * oneMounthBeforeStockInfo.LastSelling;
+                    totalOneDayBeforeAsset += portfolioStock.StockQuantity * oneDayBeforeStockInfo?.LastSelling ?? 0.0;
+                    totalOneWeekBeforeAsset += portfolioStock.StockQuantity * oneWeekBeforeStockInfo?.LastSelling ?? 0.0;
+                    totalOneMounthBeforeAsset += portfolioStock.StockQuantity * oneMounthBeforeStockInfo?.LastSelling ?? 0.0;
 
                     totalBoughtPrice += portfolioStock.StockQuantity * portfolioStock.UnitPrice;
                 }
