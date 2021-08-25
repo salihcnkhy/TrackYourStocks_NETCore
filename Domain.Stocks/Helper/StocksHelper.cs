@@ -25,7 +25,8 @@ namespace Domain.Stocks.Helper
             {
                 response = new GetStocksServiceResponse()
                 {
-                    ValueObjects = cachedStocks.Select(s => new GetStocksServiceValueObject(s, favoriteStokcs)).ToList()
+                    ValueObjects = cachedStocks.Select(s => new GetStocksServiceValueObject(s, favoriteStokcs)).ToList(),
+                    ClientUpdateUUID = FirebaseHelper.Shared.LastUpdateUUID,
                 };
                 if (request != null && request.PageSize > 0)
                     response = GetFilteredResponse(request, response);
@@ -65,5 +66,7 @@ namespace Domain.Stocks.Helper
             response.ValueObjects = stocksList;
             return response;
         }
+
+        public bool CheckStockListNeedUpdate(string clientUpdateUUID) => clientUpdateUUID != FirebaseHelper.Shared.LastUpdateUUID;
     }
 }

@@ -27,5 +27,11 @@ namespace Domain.Stocks.Service
             StocksHelper stocksHelper = new StocksHelper();
             return null;
         }
+
+        public bool CheckStockListNeedUpdate(string clientLastUpdate)
+        {
+            StocksHelper stocksHelper = new StocksHelper();
+            return stocksHelper.CheckStockListNeedUpdate(clientLastUpdate);
+        }
     }
 }

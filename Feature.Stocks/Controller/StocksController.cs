@@ -22,5 +22,11 @@ namespace Feature.Stocks.Controller
         {
             return SendAsyncRequest<GetStockDetailRequest, GetStockDetailResponse, GetStockDetailHandler>(request);
         }
+
+        [HttpPost("CheckStocksNeedUpdate")]
+        public Task<CheckStocksNeedUpdateResponse> CheckStocksNeedUpdate([FromBody] CheckStocksNeedUpdateRequest request)
+        {
+            return SendAsyncRequest<CheckStocksNeedUpdateRequest, CheckStocksNeedUpdateResponse, CheckStocksNeedUpdateHandler>(request);
+        }
     }
 }

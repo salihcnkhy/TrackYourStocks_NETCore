@@ -29,6 +29,15 @@ namespace Feature.Stocks.UseCase
         public async Task<GetStockDetailResponse> GetStockDetail(GetStockDetailRequest request)
         {
             return null;
-        } 
+        }
+        public CheckStocksNeedUpdateResponse CheckStockListNeedUpdate(CheckStocksNeedUpdateRequest request)
+        {
+            var response = Api.CheckStockListNeedUpdate(request.ClientUpdateUUID);
+            return new CheckStocksNeedUpdateResponse 
+            {
+                IsNeedUpdate = response,
+                IsSuccess = true,
+            };
+        }
     }
 }

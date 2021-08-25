@@ -26,6 +26,7 @@ namespace Core.Firebase
             var appFetchSnapshot = await db.Collection(FirestoreCollection.Constants.Value()).Document("AppFetch").GetSnapshotAsync();
             FirebaseHelper.Shared.FirebaseDateStr = appFetchSnapshot.GetValue<string>("currentDay");
             FirebaseHelper.Shared.AvailableDates = appFetchSnapshot.GetValue<List<string>>("available_date_list").Select(d => DateTime.Parse(d)).ToList();
+            FirebaseHelper.Shared.LastUpdateUUID = Guid.NewGuid().ToString();
 
             List<StockFirebaseModel> stocks = (await Task.WhenAll(snapshots.Documents.ToList()
                 .Select(async document =>
@@ -39,7 +40,7 @@ namespace Core.Firebase
                     return stockModel;
                 }))).Where(result => result != null).ToList();
 
-            foreach(var stock in stocks)
+      /*      foreach(var stock in stocks)
             {
                 var oneWeekBeforeDate = DateTime.Parse(FirebaseHelper.Shared.FirebaseDateStr).AddDays(-7);
                 var oneMountBeforeDate = DateTime.Parse(FirebaseHelper.Shared.FirebaseDateStr).AddMonths(-1);
@@ -112,21 +113,12 @@ namespace Core.Firebase
                             ProtifRate = threeMounthBeforeDayProfitRate,
                         },
                     };
-            }
+            } */
 
             StocksCache.Shared.CachedStocks = stocks.Select(s => s.GetStockCacheModel()).ToList();
         }
 
         public async Task<StockDayFirebaseModel> GetStockDayInformation(StockDayInformationRequest request)
-        {
-            FirestoreDb db = FirebaseHelper.Shared.Db;
-            var dayRef = db.Collection(FirestoreCollection.Stokcs.Value()).Document(request.Code).Collection(FirestoreCollection.Days.Value());
-            var query = dayRef.Document(request.Date);
-            var snapshot = await query.GetSnapshotAsync();
-            return snapshot.ConvertTo<StockDayFirebaseModel>();
-        }
-
-        public async Task<StockDayFirebaseModel> GetStockDetail(StockDayInformationRequest request)
         {
             FirestoreDb db = FirebaseHelper.Shared.Db;
             var dayRef = db.Collection(FirestoreCollection.Stokcs.Value()).Document(request.Code).Collection(FirestoreCollection.Days.Value());

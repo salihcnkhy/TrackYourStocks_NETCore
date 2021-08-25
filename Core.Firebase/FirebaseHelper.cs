@@ -13,6 +13,7 @@ namespace Core.Firebase
         private bool IsFirstRequest = true;
         public FirestoreDb Db;
         public FirebaseAuthProvider Auth;
+        public string LastUpdateUUID;
         public string FirebaseDateStr;
         public List<DateTime> AvailableDates;
         public static FirebaseHelper Shared

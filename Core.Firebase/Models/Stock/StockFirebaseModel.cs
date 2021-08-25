@@ -40,8 +40,6 @@ namespace Core.Firebase.Model
 
         public List<StockDayFirebaseModel> StockDayFirebaseModelList { get; set; }
 
-        public List<StockProfitDayModel> StockProfitDayFirebaseModel { get; set; }
-
         public StockCacheModel GetStockCacheModel()
         {
             return new StockCacheModel()
@@ -61,12 +59,6 @@ namespace Core.Firebase.Model
                     LastBuying = m.LastBuying,
                     LastSelling = m.LastSelling
                 }).ToList(),
-                StockProfitDayModeList = StockProfitDayFirebaseModel.Select(m => new StockProfitDayModel()
-                {
-                    Protif = m.Protif,
-                    ProtifRate = m.ProtifRate,
-                    Title = m.Title,
-                }).ToList()
             };
         }
     }
