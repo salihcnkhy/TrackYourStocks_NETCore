@@ -26,7 +26,6 @@ namespace Core.Firebase
             var appFetchSnapshot = await db.Collection(FirestoreCollection.Constants.Value()).Document("AppFetch").GetSnapshotAsync();
             FirebaseHelper.Shared.FirebaseDateStr = appFetchSnapshot.GetValue<string>("currentDay");
             FirebaseHelper.Shared.AvailableDates = appFetchSnapshot.GetValue<List<string>>("available_date_list").Select(d => DateTime.Parse(d)).ToList();
-            FirebaseHelper.Shared.LastUpdateUUID = Guid.NewGuid().ToString();
 
             List<StockCacheModel> stocks = (await Task.WhenAll(snapshots.Documents.ToList().Select(async document =>
             {
@@ -35,6 +34,7 @@ namespace Core.Firebase
             }))).Where(result => result != null).ToList();
 
             StocksCache.Shared.CachedStocks = stocks;
+            FirebaseHelper.Shared.LastUpdateUUID = Guid.NewGuid().ToString();
         }
 
         public async Task<StockDayFirebaseModel> GetStockDayInformation(StockDayInformationRequest request)
