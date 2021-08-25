@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Core.Base;
 using Domain.Stocks.Model;
 using Domain.Stocks.Service;
@@ -28,12 +24,28 @@ namespace Feature.Stocks.UseCase
 
         public async Task<GetStockDetailResponse> GetStockDetail(GetStockDetailRequest request)
         {
-            return null;
+            var serviceRequest = new GetStockDetailServiceRequest
+            {
+                Code = request.Code,
+                DayFrequency = request.DayFrequency,
+                DayInformationSize = request.DayInformationSize,
+                IsProfitDayInfomationRequired = request.IsProfitDayInfomationRequired,
+                UserID = request.UserID,
+                UserToken = request.UserToken,
+            };
+
+            var response = await Api.GetStockDetail(serviceRequest);
+
+            return new GetStockDetailResponse
+            {
+                IsSuccess = true,
+                StocksValueObject = new GetStocksValueObject(response?.StocksServiceValueObject),
+            };
         }
         public CheckStocksNeedUpdateResponse CheckStockListNeedUpdate(CheckStocksNeedUpdateRequest request)
         {
             var response = Api.CheckStockListNeedUpdate(request.ClientUpdateUUID);
-            return new CheckStocksNeedUpdateResponse 
+            return new CheckStocksNeedUpdateResponse
             {
                 IsNeedUpdate = response,
                 IsSuccess = true,

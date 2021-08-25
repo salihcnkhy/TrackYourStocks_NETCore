@@ -1,14 +1,15 @@
-﻿using Core.Base;
+﻿using Google.Cloud.Firestore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Stocks.Model
+namespace Firebase.Service.Models
 {
-    public class GetStockDetailServiceRequest : AuthRequiredRequest
+    public class StockDetailRequest : FirestoreGeneralRequest
     {
+        public DocumentSnapshot StockSnapshot { get; set; }
         public bool IsProfitDayInfomationRequired { get; set; } = false;
         public string Code { get; set; }
         public int DayFrequency { get; set; }

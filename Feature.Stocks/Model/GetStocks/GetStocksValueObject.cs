@@ -19,6 +19,8 @@ namespace Feature.Stocks.Model
         public double DayMax { get; set; }
         public double DayMin { get; set; }
         public List<StockDayInfoValueObject> StockDayInformationList { get; set; }
+        public List<StockProfitDayModel> StockProfitDayModelList { get; set; }
+
         public GetStocksValueObject(GetStocksServiceValueObject serviceValueObject)
         {
             Code = serviceValueObject.Code;
@@ -36,6 +38,8 @@ namespace Feature.Stocks.Model
                 LastBuying = m.LastBuying,
                 LastSelling = m.LastSelling,
             }).ToList();
+
+            StockProfitDayModelList = serviceValueObject.StockProfitDayModelList;
         }
     }
 

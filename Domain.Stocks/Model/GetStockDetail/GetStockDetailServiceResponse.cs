@@ -5,9 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Stocks.Model.GetStockDetail
+namespace Domain.Stocks.Model
 {
-    public class GetStockDetailServiceResponse : Response
+    public class GetStockDetailServiceResponse
     {
+        public GetStocksServiceValueObject StocksServiceValueObject { get; set; }
     }
 }

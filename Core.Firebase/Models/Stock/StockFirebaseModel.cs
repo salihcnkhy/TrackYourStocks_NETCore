@@ -39,6 +39,7 @@ namespace Core.Firebase.Model
         public double DayMin { get; set; }
 
         public List<StockDayFirebaseModel> StockDayFirebaseModelList { get; set; }
+        public List<StockProfitDayModel> StockProfitDayFirebaseModel { get; set; }
 
         public StockCacheModel GetStockCacheModel()
         {
@@ -53,11 +54,18 @@ namespace Core.Firebase.Model
                 DayMin = DayMin,
                 FullName = FullName,
                 ShortName = ShortName,
-                StockDayCacheModelList = StockDayFirebaseModelList.Select(m => new StockDayCacheModel()
+                StockDayCacheModelList = StockDayFirebaseModelList?.Select(m => new StockDayCacheModel()
                 {
                     Day = m.Day,
                     LastBuying = m.LastBuying,
                     LastSelling = m.LastSelling
+                }).ToList(),
+
+                StockProfitDayModeList = StockProfitDayFirebaseModel?.Select(m => new StockProfitDayModel()
+                {
+                    Protif = m.Protif,
+                    ProtifRate = m.ProtifRate,
+                    Title = m.Title,
                 }).ToList(),
             };
         }

@@ -9,7 +9,9 @@ namespace Feature.Stocks.Model
 {
     public class GetStockDetailRequest : AuthRequiredRequest
     {
-        public bool ShouldIncludePastProfits { get; set; }
-        public int DayFrequency { get; set; }
+        public bool IsProfitDayInfomationRequired { get; set; } = false;
+        public string Code { get; set; }
+        public int DayFrequency { get; set; } = 1;
+        public int DayInformationSize { get; set; } = 20;
     }
 }

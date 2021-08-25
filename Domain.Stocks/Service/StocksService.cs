@@ -1,7 +1,6 @@
 ﻿using Core.Base;
 using Domain.Stocks.Helper;
 using Domain.Stocks.Model;
-using Domain.Stocks.Model.GetStockDetail;
 using System.Threading.Tasks;
 
 namespace Domain.Stocks.Service
@@ -25,7 +24,8 @@ namespace Domain.Stocks.Service
         public async Task<GetStockDetailServiceResponse> GetStockDetail(GetStockDetailServiceRequest request)
         {
             StocksHelper stocksHelper = new StocksHelper();
-            return null;
+            var response = await stocksHelper.GetStockDetail(request);
+            return response;
         }
 
         public bool CheckStockListNeedUpdate(string clientLastUpdate)

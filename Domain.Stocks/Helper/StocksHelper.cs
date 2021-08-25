@@ -1,13 +1,9 @@
-﻿using Core.Cache;
-using Core.Firebase;
+﻿using Core.Firebase;
 using Core.Firebase.Model;
 using Domain.Stocks.Model;
-using Domain.Stocks.Model.GetStockDetail;
 using Firebase.Service.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Domain.Stocks.Helper
@@ -19,13 +15,12 @@ namespace Domain.Stocks.Helper
             var firebaseService = new FirebaseService();
             var firebaseRequest = new FirestoreGeneralRequest { UserID = request.UserID, UserToken = request.UserToken };
             var cachedStocks = await firebaseService.GetCachedStocks(firebaseRequest);
-            var favoriteStokcs = await firebaseService.GetFavoriteStockCodes(firebaseRequest);
             GetStocksServiceResponse response = null;
             if (cachedStocks != null)
             {
                 response = new GetStocksServiceResponse()
                 {
-                    ValueObjects = cachedStocks.Select(s => new GetStocksServiceValueObject(s, favoriteStokcs)).ToList(),
+                    ValueObjects = cachedStocks.Select(s => new GetStocksServiceValueObject(s)).ToList(),
                     ClientUpdateUUID = FirebaseHelper.Shared.LastUpdateUUID,
                 };
                 if (request != null && request.PageSize > 0)
@@ -65,6 +60,22 @@ namespace Domain.Stocks.Helper
             response.IsContinue = stocksList.Count == request.PageSize;
             response.ValueObjects = stocksList;
             return response;
+        }
+
+        public async Task<GetStockDetailServiceResponse> GetStockDetail(GetStockDetailServiceRequest request)
+        {
+            var firebaseService = new FirebaseService();
+            var response = await firebaseService.GetStockDetail(new StockDetailRequest 
+            { 
+                Code = request.Code,
+                DayFrequency = request.DayFrequency,
+                DayInformationSize = request.DayInformationSize,
+                IsProfitDayInfomationRequired = request.IsProfitDayInfomationRequired,
+                UserToken = request.UserToken,
+                UserID = request.UserID,
+            });
+
+            return new GetStockDetailServiceResponse { StocksServiceValueObject = new GetStocksServiceValueObject(response) };
         }
 
         public bool CheckStockListNeedUpdate(string clientUpdateUUID) => clientUpdateUUID != FirebaseHelper.Shared.LastUpdateUUID;

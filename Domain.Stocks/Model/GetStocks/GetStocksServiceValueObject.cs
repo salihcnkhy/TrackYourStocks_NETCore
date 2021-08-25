@@ -21,7 +21,8 @@ namespace Domain.Stocks.Model
         public double DayMin { get; set; }
         public List<GetStockDayInfoServiceResponse> StocksDayServiceValueObjectList { get; set; }
         public List<StockProfitDayModel> StockProfitDayModelList { get; set; }
-        public GetStocksServiceValueObject(StockCacheModel cacheModel, List<string> userFavoriteStockList)
+       
+        public GetStocksServiceValueObject(StockCacheModel cacheModel)
         {
             Code = cacheModel.Code;
             FullName = cacheModel.FullName;
@@ -32,12 +33,21 @@ namespace Domain.Stocks.Model
             CurrentChangeRate = cacheModel.CurrentChangeRate;
             DayMax = cacheModel.DayMax;
             DayMin = cacheModel.DayMin;
-            StocksDayServiceValueObjectList = cacheModel.StockDayCacheModelList.Select(m => new GetStockDayInfoServiceResponse()
+          
+            StocksDayServiceValueObjectList = cacheModel.StockDayCacheModelList?.Select(m => new GetStockDayInfoServiceResponse()
             {
                 Day = m.Day,
                 LastBuying = m.LastBuying,
                 LastSelling = m.LastSelling,
             }).ToList();
+
+            StockProfitDayModelList = cacheModel.StockProfitDayModeList?.Select(m => new StockProfitDayModel
+            {
+                Protif = m.Protif,
+                ProtifRate = m.ProtifRate,
+                Title = m.Title,
+            }).ToList();
+
         }
     }
     public class StockProfitDayModel

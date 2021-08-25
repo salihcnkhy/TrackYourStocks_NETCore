@@ -9,5 +9,6 @@ namespace Feature.Stocks.Model
 {
     public class GetStockDetailResponse : Response
     {
+        public GetStocksValueObject StocksValueObject { get; set; }
     }
 }
