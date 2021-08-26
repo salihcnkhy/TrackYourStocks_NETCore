@@ -10,15 +10,17 @@ namespace Core.Extensions
     {
         public static DateTime GetNearestPastAvailableDate(this DateTime value, List<DateTime> dates)
         {
-            dates.Sort((x, y) => x.CompareTo(y));
-            var oldest = dates.First();
+            var dateList = new List<DateTime>();
+            dateList.AddRange(dates);
+            dateList.Sort((x, y) => x.CompareTo(y));
+            var oldest = dateList.First();
 
-            bool exist = dates.Any(d => d.Month == value.Month && d.Day == value.Day);
+            bool exist = dateList.Any(d => d.Month == value.Month && d.Day == value.Day);
             bool onLimit = oldest.CompareTo(value) == 0;
             while (!exist && !onLimit)
             {
                 value = value.AddDays(-1);
-                exist = dates.Any(d => d.Month == value.Month && d.Day == value.Day);
+                exist = dateList.Any(d => d.Month == value.Month && d.Day == value.Day);
                 onLimit = oldest.CompareTo(value) == 0;
             }
 

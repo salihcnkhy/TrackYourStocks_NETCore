@@ -20,7 +20,7 @@ namespace Firebase.Service.Models
         public string LastSignedToken { get; set; }
 
         [FirestoreProperty("favorite_stocks")]
-        public List<string> FavoriteStocks { get; set; }
+        public List<string> FavoriteStocks { get; set; } = new List<string>();
 
         public DocumentReference UserReference { get; set; }
     }

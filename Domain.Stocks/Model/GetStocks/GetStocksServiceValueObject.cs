@@ -43,8 +43,8 @@ namespace Domain.Stocks.Model
 
             StockProfitDayModelList = cacheModel.StockProfitDayModeList?.Select(m => new StockProfitDayModel
             {
-                Protif = m.Protif,
-                ProtifRate = m.ProtifRate,
+                Profit = m.Profit,
+                ProfitRate = m.ProfitRate,
                 Title = m.Title,
             }).ToList();
 
@@ -52,8 +52,8 @@ namespace Domain.Stocks.Model
     }
     public class StockProfitDayModel
     {
-        public double Protif { get; set; }
-        public double ProtifRate { get; set; }
+        public double Profit { get; set; }
+        public double ProfitRate { get; set; }
         public string Title { get; set; }
     }
 }

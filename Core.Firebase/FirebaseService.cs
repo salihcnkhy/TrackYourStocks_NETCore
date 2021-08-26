@@ -26,6 +26,7 @@ namespace Core.Firebase
             var appFetchSnapshot = await db.Collection(FirestoreCollection.Constants.Value()).Document("AppFetch").GetSnapshotAsync();
             FirebaseHelper.Shared.FirebaseDateStr = appFetchSnapshot.GetValue<string>("currentDay");
             FirebaseHelper.Shared.AvailableDates = appFetchSnapshot.GetValue<List<string>>("available_date_list").Select(d => DateTime.Parse(d)).ToList();
+            FirebaseHelper.Shared.AvailableDates.Sort((x, y) => y.CompareTo(x));
 
             List<StockCacheModel> stocks = (await Task.WhenAll(snapshots.Documents.ToList().Select(async document =>
             {
@@ -64,9 +65,8 @@ namespace Core.Firebase
             var stockModel = request.StockSnapshot.ConvertTo<StockFirebaseModel>();
             var dayRef = request.StockSnapshot.Reference.Collection(FirestoreCollection.Days.Value());
 
-            var availableDates = FirebaseHelper.Shared.AvailableDates;
-            availableDates.Sort((x, y) => y.CompareTo(x));
-
+            var availableDates = new List<DateTime>();
+            availableDates.AddRange(FirebaseHelper.Shared.AvailableDates); 
             List<string> dates = new List<string>();
             List<List<string>> dateGroups = new List<List<string>>();
 
@@ -88,6 +88,7 @@ namespace Core.Firebase
             }
 
             stockModel.StockDayFirebaseModelList = new List<StockDayFirebaseModel>();
+            stockModel.StockProfitDayFirebaseModel = new List<StockProfitDayModel>();
 
             foreach (var days in dateGroups)
             {
@@ -126,7 +127,7 @@ namespace Core.Firebase
                 var threeMounthBeforeRequest = new StockDayInformationRequest
                 {
                     Code = stockModel.Code,
-                    Date = oneMountBeforeDate.ToString("yyyy-MM-dd"),
+                    Date = threeMountBeforeDate.ToString("yyyy-MM-dd"),
                 };
 
                 var oneWeekBeforeDayInfo = await GetStockDayInformation(oneWeekBeforeRequest);
@@ -147,26 +148,26 @@ namespace Core.Firebase
                     new StockProfitDayModel
                     {
                         Title = "Bugün",
-                        Protif = Math.Round(stockModel.CurrentChange, 2, MidpointRounding.AwayFromZero),
-                        ProtifRate = Math.Round(stockModel.CurrentChangeRate, 2, MidpointRounding.AwayFromZero),
+                        Profit = Math.Round(stockModel.CurrentChange, 2, MidpointRounding.AwayFromZero),
+                        ProfitRate = Math.Round(stockModel.CurrentChangeRate, 2, MidpointRounding.AwayFromZero),
                     },
                     new StockProfitDayModel
                     {
                         Title = "1 Hafta",
-                        Protif = Math.Round(oneWeekBeforeDayProfit, 2, MidpointRounding.AwayFromZero),
-                        ProtifRate = Math.Round(oneWeekBeforeDayProfitRate, 2, MidpointRounding.AwayFromZero),
+                        Profit = Math.Round(oneWeekBeforeDayProfit, 2, MidpointRounding.AwayFromZero),
+                        ProfitRate = Math.Round(oneWeekBeforeDayProfitRate, 2, MidpointRounding.AwayFromZero),
                     },
                     new StockProfitDayModel
                     {
                         Title = "1 Ay",
-                        Protif = Math.Round(oneMounthBeforeDayProfit, 2, MidpointRounding.AwayFromZero),
-                        ProtifRate = Math.Round(oneMounthBeforeDayProfitRate, 2,MidpointRounding.AwayFromZero),
+                        Profit = Math.Round(oneMounthBeforeDayProfit, 2, MidpointRounding.AwayFromZero),
+                        ProfitRate = Math.Round(oneMounthBeforeDayProfitRate, 2,MidpointRounding.AwayFromZero),
                     },
                     new StockProfitDayModel
                     {
                         Title = "3 Ay",
-                        Protif = Math.Round(threeMounthBeforeDayProfit, 2, MidpointRounding.AwayFromZero),
-                        ProtifRate = Math.Round(threeMounthBeforeDayProfitRate, 2, MidpointRounding.AwayFromZero),
+                        Profit = Math.Round(threeMounthBeforeDayProfit, 2, MidpointRounding.AwayFromZero),
+                        ProfitRate = Math.Round(threeMounthBeforeDayProfitRate, 2, MidpointRounding.AwayFromZero),
                     },
                 };
             }
