@@ -66,7 +66,7 @@ namespace Core.Firebase
             var dayRef = request.StockSnapshot.Reference.Collection(FirestoreCollection.Days.Value());
 
             var availableDates = new List<DateTime>();
-            availableDates.AddRange(FirebaseHelper.Shared.AvailableDates); 
+            availableDates.AddRange(FirebaseHelper.Shared.AvailableDates);
             List<string> dates = new List<string>();
             List<List<string>> dateGroups = new List<List<string>>();
 
@@ -215,7 +215,7 @@ namespace Core.Firebase
             await CheckUserSignToken(request);
 
             FirestoreDb db = FirebaseHelper.Shared.Db;
-            var portfolioRef = db.Collection(FirestoreCollection.Users.Value()).Document(request.UserID).Collection(FirestoreCollection.Portfolio.Value());
+            var portfolioRef = db.Collection(FirestoreCollection.Users.Value()).Document(request.UserID).Collection(FirestoreCollection.Portfolio.Value()).WhereGreaterThan("bought_stock_quantity", 0);
             var portfolioStockSnapshot = await portfolioRef.GetSnapshotAsync();
             List<PortfolioFirebaseModel> portfolioStockList = portfolioStockSnapshot.Documents.ToList().Select(doc => doc.ConvertTo<PortfolioFirebaseModel>()).ToList();
             return portfolioStockList;
@@ -307,6 +307,73 @@ namespace Core.Firebase
             }
         }
 
+        public async Task BuyStock(BuyStockFirestoreRequest request)
+        {
+            var userFirebaseModel = await GetUser(request);
+            await CheckUserSignToken(request, userFirebaseModel);
+            var userStockRef = userFirebaseModel.UserReference.Collection(FirestoreCollection.Portfolio.Value()).Document(request.Code);
+            var marketHistoryRef = userFirebaseModel.UserReference.Collection(FirestoreCollection.MarketHistory.Value());
+
+            var stockUpdateDict = new Dictionary<string, Object>
+            {
+                { "bought_stock_quantity", FieldValue.Increment(request.AdditionalBuyQuantity) },
+                { "code", request.Code },
+                { "unit_bought_price", request.NewUnitBoughtPrice }
+            };
+
+            var cacheStock = StocksCache.Shared.CachedStocks.First(s => s.Code == request.Code);
+
+            var stockBuyRecordDict = new Dictionary<string, Object>
+            {
+                { "code", request.Code },
+                { "quantity", request.AdditionalBuyQuantity },
+                { "unit_price", request.CurrentBoughtPrice },
+                { "long_name", cacheStock?.FullName ?? "Tanımsız hisse" },
+                { "date", Timestamp.GetCurrentTimestamp() },
+                { "process_type", "buy" },
+            };
+
+            await userStockRef.SetAsync(stockUpdateDict, SetOptions.MergeAll);
+            await marketHistoryRef.AddAsync(stockBuyRecordDict);
+        }
+
+        public async Task SellStock(SellStockFirestoreRequest request)
+        {
+            var userFirebaseModel = await GetUser(request);
+            await CheckUserSignToken(request, userFirebaseModel);
+            var userStockRef = userFirebaseModel.UserReference.Collection(FirestoreCollection.Portfolio.Value()).Document(request.Code);
+            var marketHistoryRef = userFirebaseModel.UserReference.Collection(FirestoreCollection.MarketHistory.Value());
+
+            var stockUpdateDict = new Dictionary<string, Object>
+            {
+                { "bought_stock_quantity", FieldValue.Increment(-request.LotQuantity) },
+            };
+
+            var cacheStock = StocksCache.Shared.CachedStocks.First(s => s.Code == request.Code);
+
+            var stockSellRecordDict = new Dictionary<string, Object>
+            {
+                { "code", request.Code },
+                { "quantity", request.LotQuantity },
+                { "unit_price", request.SellPrice },
+                { "long_name", cacheStock?.FullName ?? "Tanımsız hisse" },
+                { "date", Timestamp.GetCurrentTimestamp() },
+                { "process_type", "sell" },
+            };
+
+            await userStockRef.UpdateAsync(stockUpdateDict);
+            await marketHistoryRef.AddAsync(stockSellRecordDict);
+        }
+
+        public async Task<PortfolioFirebaseModel> GetUserPortfolioStock(UserPorfolioStockRequest request)
+        {
+            await CheckUserSignToken(request);
+
+            FirestoreDb db = FirebaseHelper.Shared.Db;
+            var stockRef = db.Collection(FirestoreCollection.Users.Value()).Document(request.UserID).Collection(FirestoreCollection.Portfolio.Value()).Document(request.Code);
+            var stockDocument = await stockRef.GetSnapshotAsync();
+            return stockDocument.ConvertTo<PortfolioFirebaseModel>();
+        }
         #endregion
     }
 }

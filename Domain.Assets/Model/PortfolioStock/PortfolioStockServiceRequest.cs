@@ -5,9 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Feature.UserInformation.Model
+namespace Domain.Assets.Model
 {
-    public class MarketHistoryListRequest : AuthRequiredRequest
+    public class PortfolioStockServiceRequest : AuthRequiredRequest 
     {
+        public string Code { get; set; }
     }
 }

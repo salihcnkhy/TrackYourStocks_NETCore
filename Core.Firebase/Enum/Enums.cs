@@ -20,7 +20,7 @@ namespace Core.Firebase.Enum
                 case FirestoreCollection.Alarms: return "Alarms";
                 case FirestoreCollection.MarketHistory: return "MarketHistory";
                 case FirestoreCollection.Notifications: return "Notifications";
-
+                case FirestoreCollection.History: return "History";
                 default: return String.Empty;
             }
         }
@@ -35,6 +35,6 @@ namespace Core.Firebase.Enum
         Alarms,
         MarketHistory,
         Notifications,
-
+        History,
     }
 }

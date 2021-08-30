@@ -9,5 +9,8 @@ namespace Feature.Assets.Model
 {
     public class SellStockRequest : AuthRequiredRequest
     {
+        public string Code { get; set; }
+        public int LotQuantity { get; set; }
+        public double SellPrice { get; set; }
     }
 }

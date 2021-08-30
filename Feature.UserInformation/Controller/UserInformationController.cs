@@ -25,12 +25,6 @@ namespace Feature.UserInformation.Controller
             return SendAsyncRequest<NotificationListRequest, NotificationListResponse, GetNotificationListHandler>(request);
         }
 
-        [HttpPost("GetUserMarketHistoryList")]
-        public Task<MarketHistoryListResponse> GetUserMarkerHistoryList([FromBody] MarketHistoryListRequest request)
-        {
-            return SendAsyncRequest<MarketHistoryListRequest, MarketHistoryListResponse, GetMarketHistoryListHandler>(request);
-        }
-
         [HttpPost("GetFavoriteList")]
         public Task<GetFavoriteListResponse> GetFavoriteList([FromBody] GetFavoriteListRequest request)
         {

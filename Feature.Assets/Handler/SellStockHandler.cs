@@ -13,7 +13,7 @@ namespace Feature.Assets.Handler
     {
         public Task<SellStockResponse> Handle(SellStockRequest request)
         {
-            return null;
+            return UseCase.SellStock(request);
         }
     }
 }

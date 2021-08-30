@@ -10,8 +10,6 @@ namespace Firebase.Service.Models
     [FirestoreData]
     public class MarketHistoryFirebaseModel
     {
-        [FirestoreProperty("id")]
-        public string Id { get; set; }
 
         [FirestoreProperty("code")]
         public string Code { get; set; }
@@ -20,7 +18,7 @@ namespace Firebase.Service.Models
         public string LongName { get; set; }
 
         [FirestoreProperty("process_type")]
-        public int ProcessType { get; set; }
+        public string ProcessType { get; set; }
 
         [FirestoreProperty("date")]
         public Timestamp Date { get; set; }

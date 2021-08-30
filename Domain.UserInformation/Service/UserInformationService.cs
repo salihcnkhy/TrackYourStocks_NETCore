@@ -42,23 +42,6 @@ namespace Domain.UserInformation.Service
             return response;
         }
 
-        public async Task<List<MarketHistoryServiceModel>> GetMarketHistoryList(MarketHistoryRequest request)
-        {
-            var service = new FirebaseService();
-            var responseList = await service.GetMarketHistory(new FirestoreGeneralRequest { UserID = request.UserID, UserToken = request.UserToken });
-            var response = responseList.Select(a => new MarketHistoryServiceModel
-            {
-                Code = a.Code,
-                Date = a.Date.ToDateTime(),
-                ProcessType = a.ProcessType,
-                Quantity = a.Quantity,
-                UnitPrice = a.UnitPrice,
-                Id = a.Id,
-                LongName = a.LongName,
-            }).ToList();
-            return response;
-        }
-
         public async Task<GetFavoriteListServiceResponse> GetFavoriteList(GetFavoriteListServiceRequest request)
         {
             var service = new FirebaseService();

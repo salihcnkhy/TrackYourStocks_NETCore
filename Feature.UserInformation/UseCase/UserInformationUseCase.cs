@@ -33,28 +33,6 @@ namespace Feature.UserInformation.UseCase
             return notificationListResponse;
         }
 
-        public async Task<MarketHistoryListResponse> GetMarketHistoryList(MarketHistoryListRequest request)
-        {
-            var responseList = await Api.GetMarketHistoryList(new MarketHistoryRequest { UserID = request.UserID, UserToken = request.UserToken });
-
-            var marketHistoryResponse = new MarketHistoryListResponse
-            {
-                IsSuccess = true,
-                MarkerHistoryList = responseList.Select(a => new MarketHistoryModel
-                {
-                    Code = a.Code,
-                    Date = a.Date,
-                    ProcessType = a.ProcessType,
-                    Quantity = a.Quantity,
-                    UnitPrice = a.UnitPrice,
-                    Id = a.Id,
-                    LongName = a.LongName,
-                }).ToList()
-            };
-
-            return marketHistoryResponse;
-        }
-
         public async Task<AlarmListResponse> GetAlarmList(AlarmListRequest request)
         {
             var responseList = await Api.GetAlarmList(new AlarmRequest { UserID = request.UserID, UserToken = request.UserToken });

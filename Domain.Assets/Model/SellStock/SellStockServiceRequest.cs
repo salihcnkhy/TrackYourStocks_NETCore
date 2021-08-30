@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Feature.Assets.Model
+namespace Domain.Assets.Model
 {
-    public class BuyStockRequest : AuthRequiredRequest
+    public class SellStockServiceRequest : AuthRequiredRequest 
     {
         public string Code { get; set; }
         public int LotQuantity { get; set; }
-        public double BuyPrice { get; set; }
+        public double SellPrice { get; set; }
     }
 }

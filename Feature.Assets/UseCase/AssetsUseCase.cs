@@ -10,6 +10,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System;
 using Core.Firebase;
+using Firebase.Service.Models;
 
 namespace Feature.Assets.UseCase
 {
@@ -87,10 +88,10 @@ namespace Feature.Assets.UseCase
                 var assetProfitList = new List<AssetProfitInformation>();
 
                 var currentProfit = totalCurrentAsset - totalBoughtPrice;
-                var currentProfitRate =  (100 *currentProfit) / (totalBoughtPrice == 0 ? 1.0 : totalBoughtPrice);
+                var currentProfitRate = (100 * currentProfit) / (totalBoughtPrice == 0 ? 1.0 : totalBoughtPrice);
 
                 var oneDayBeforeProfit = totalOneDayBeforeAsset - totalBoughtPrice;
-                var oneDayBeforeProfitRate =  (100 * oneDayBeforeProfit) / (totalBoughtPrice == 0 ? 1.0 : totalBoughtPrice);
+                var oneDayBeforeProfitRate = (100 * oneDayBeforeProfit) / (totalBoughtPrice == 0 ? 1.0 : totalBoughtPrice);
 
                 var oneWeekBeforeProfit = totalOneWeekBeforeAsset - totalBoughtPrice;
                 var oneWeekBeforeProfitRate = (100 * oneWeekBeforeProfit) / (totalBoughtPrice == 0 ? 1.0 : totalBoughtPrice);
@@ -146,16 +147,79 @@ namespace Feature.Assets.UseCase
                     };
                 }).Where(item => item != null).ToList();
 
+                var marketHistoryListResponse = await Api.GetMarketHistoryList(new MarketHistoryRequest { UserID = request.UserID, UserToken = request.UserToken });
+
+                var marketHistories = marketHistoryListResponse.Select(a => new MarketHistoryModel
+                {
+                    Code = a.Code,
+                    Date = a.Date.ToString("dd.MM.yyyy HH:mm:ss"),
+                    ProcessType = a.ProcessType == "sell" ? 1 : 0,
+                    Quantity = a.Quantity,
+                    UnitPrice = a.UnitPrice,
+                    LongName = a.LongName,
+                }).ToList();
+
                 return new GetAssetInformationResponse
                 {
                     AssetProfitInformations = assetProfitList,
                     TotalCurrentAsset = Math.Round(totalCurrentAsset, 2, MidpointRounding.AwayFromZero),
                     AssetStockInformations = assetStockInformationList,
+                    MarketHistories = marketHistories,
                     IsSuccess = true,
                 };
             }
             else
                 return new GetAssetInformationResponse();
+        }
+
+        public async Task<BuyStockResponse> BuyStock(BuyStockRequest request)
+        {
+            var porfolioStock = await Api.GetUserPorfolioStock(new PortfolioStockServiceRequest { UserToken = request.UserToken, UserID = request.UserID, Code = request.Code });
+
+            var totalCurrentPrice = (porfolioStock?.UnitPrice ?? 0.0) * (porfolioStock?.StockQuantity ?? 0);
+            var totalBuyPrice = request.LotQuantity * request.BuyPrice;
+
+            var afterBuyStockTotalBuyPrice = totalBuyPrice + totalCurrentPrice;
+            var afterBuyStockQuantity = request.LotQuantity + (porfolioStock?.StockQuantity ?? 0);
+
+            var newUnitBoughtPrice = Math.Round(afterBuyStockTotalBuyPrice / afterBuyStockQuantity, 2, MidpointRounding.AwayFromZero);
+
+            var serviceRequest = new BuyStockServiceRequest
+            {
+                Code = request.Code,
+                AdditionalBuyQuantity = request.LotQuantity,
+                CurrentBoughtPrice = request.BuyPrice,
+                NewUnitBoughtPrice = newUnitBoughtPrice,
+                UserID = request.UserID,
+                UserToken = request.UserToken,
+            };
+            var response = await Api.BuyStock(serviceRequest);
+            return new BuyStockResponse { IsSuccess = response.IsSuccess, TotalQuantity = afterBuyStockQuantity };
+        }
+
+        public async Task<SellStockResponse> SellStock(SellStockRequest request)
+        {
+
+            var porfolioStock = await Api.GetUserPorfolioStock(new PortfolioStockServiceRequest { UserToken = request.UserToken, UserID = request.UserID, Code = request.Code });
+            
+            if(porfolioStock == null || porfolioStock.StockQuantity < request.LotQuantity)
+            {
+                throw new Exception();
+            }
+
+            var afterSellStockQuantity = request.LotQuantity - porfolioStock.StockQuantity;
+
+
+            var serviceRequest = new SellStockServiceRequest
+            {
+                Code = request.Code,
+                LotQuantity = request.LotQuantity,
+                SellPrice = request.SellPrice,
+                UserID = request.UserID,
+                UserToken = request.UserToken,
+            };
+            var response = await Api.SellStock(serviceRequest);
+            return new SellStockResponse { IsSuccess = response.IsSuccess, TotalQuantity = afterSellStockQuantity };
         }
     }
 }

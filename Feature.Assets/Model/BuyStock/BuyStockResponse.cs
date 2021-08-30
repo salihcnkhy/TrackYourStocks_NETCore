@@ -5,5 +5,6 @@ namespace Feature.Assets.Model
 {
     public class BuyStockResponse : Response
     {
+        public int TotalQuantity { get; set; }
     }
 }

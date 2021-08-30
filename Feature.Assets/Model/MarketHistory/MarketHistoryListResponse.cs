@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Feature.UserInformation.Model
+namespace Feature.Assets.Model
 {
     public class MarketHistoryListResponse : Response
     {

@@ -7,12 +7,14 @@ namespace Feature.Assets.Model
     {
         public List<AssetStockInformationModel> AssetStockInformations { get; set; }
         public List<AssetProfitInformation> AssetProfitInformations { get; set; }
+        public List<MarketHistoryModel> MarketHistories { get; set; }
         public double TotalCurrentAsset { get; set; }
 
         public GetAssetInformationResponse()
         {
             AssetStockInformations = new List<AssetStockInformationModel>();
             AssetProfitInformations = new List<AssetProfitInformation>();
+            MarketHistories = new List<MarketHistoryModel>();
         }
     }
 

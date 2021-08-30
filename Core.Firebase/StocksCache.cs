@@ -23,7 +23,7 @@ namespace Core.Cache
         }
         private StocksCache() {  }
 
-        public List<StockCacheModel> CachedStocks { get; set; }
+        public List<StockCacheModel> CachedStocks { get; set; } = new List<StockCacheModel>();
 
     }
 }

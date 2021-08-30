@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.UserInformation.Model
+namespace Domain.Assets.Model
 {
     public class MarketHistoryRequest : AuthRequiredRequest
     {
