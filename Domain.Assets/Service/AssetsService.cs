@@ -14,6 +14,7 @@ namespace Domain.Assets.Service
         {
             var service = new FirebaseService();
             var firebasePortfolioListResponse = await service.GetUserPortfolioList(new FirestoreGeneralRequest { UserID = request.UserID, UserToken = request.UserToken });
+            firebasePortfolioListResponse = firebasePortfolioListResponse.OrderBy(c => c.Code).ToList();
             return new GetAssetInformationServiceResponse() { PortfolioFirebaseModelList = firebasePortfolioListResponse };
         }
 

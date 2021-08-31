@@ -157,6 +157,7 @@ namespace Feature.Assets.UseCase
                     Quantity = a.Quantity,
                     UnitPrice = a.UnitPrice,
                     LongName = a.LongName,
+                    Total = Math.Round((a.Quantity * a.UnitPrice),2, MidpointRounding.AwayFromZero),
                 }).ToList();
 
                 return new GetAssetInformationResponse

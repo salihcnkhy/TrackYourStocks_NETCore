@@ -215,7 +215,8 @@ namespace Core.Firebase
             await CheckUserSignToken(request);
 
             FirestoreDb db = FirebaseHelper.Shared.Db;
-            var portfolioRef = db.Collection(FirestoreCollection.Users.Value()).Document(request.UserID).Collection(FirestoreCollection.Portfolio.Value()).WhereGreaterThan("bought_stock_quantity", 0);
+            var portfolioRef = db.Collection(FirestoreCollection.Users.Value()).Document(request.UserID).Collection(FirestoreCollection.Portfolio.Value())
+                .WhereGreaterThan("bought_stock_quantity", 0);
             var portfolioStockSnapshot = await portfolioRef.GetSnapshotAsync();
             List<PortfolioFirebaseModel> portfolioStockList = portfolioStockSnapshot.Documents.ToList().Select(doc => doc.ConvertTo<PortfolioFirebaseModel>()).ToList();
             return portfolioStockList;
@@ -286,7 +287,7 @@ namespace Core.Firebase
             await CheckUserSignToken(request);
             var db = FirebaseHelper.Shared.Db;
             var query = db.Collection(FirestoreCollection.Users.Value()).Document(request.UserID).Collection(FirestoreCollection.MarketHistory.Value());
-            var marketHistorySnapshots = await query.GetSnapshotAsync();
+            var marketHistorySnapshots = await query.OrderByDescending("date").GetSnapshotAsync();
 
             var marketHistoryList = marketHistorySnapshots.Select(s => s.ConvertTo<MarketHistoryFirebaseModel>()).ToList();
             return marketHistoryList;
