@@ -208,7 +208,7 @@ namespace Feature.Assets.UseCase
                 throw new Exception();
             }
 
-            var afterSellStockQuantity = request.LotQuantity - porfolioStock.StockQuantity;
+            var afterSellStockQuantity = porfolioStock.StockQuantity - request.LotQuantity ;
 
 
             var serviceRequest = new SellStockServiceRequest
