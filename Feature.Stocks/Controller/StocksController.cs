@@ -12,19 +12,19 @@ namespace Feature.Stocks.Controller
     public class StocksController: ApiController
     {
         [HttpPost("AllStocks")]
-        public Task<GetStocksResponse> AllStocks([FromBody] GetStocksRequest request)
+        public Task<IResponse> AllStocks([FromBody] GetStocksRequest request)
         {
             return SendAsyncRequest<GetStocksRequest, GetStocksResponse, GetAllStocksHandler>(request);
         }
 
         [HttpPost("GetStockDetail")]
-        public Task<GetStockDetailResponse> GetStockDetail([FromBody] GetStockDetailRequest request)
+        public Task<IResponse> GetStockDetail([FromBody] GetStockDetailRequest request)
         {
             return SendAsyncRequest<GetStockDetailRequest, GetStockDetailResponse, GetStockDetailHandler>(request);
         }
 
         [HttpPost("CheckStocksNeedUpdate")]
-        public Task<CheckStocksNeedUpdateResponse> CheckStocksNeedUpdate([FromBody] CheckStocksNeedUpdateRequest request)
+        public Task<IResponse> CheckStocksNeedUpdate([FromBody] CheckStocksNeedUpdateRequest request)
         {
             return SendAsyncRequest<CheckStocksNeedUpdateRequest, CheckStocksNeedUpdateResponse, CheckStocksNeedUpdateHandler>(request);
         }

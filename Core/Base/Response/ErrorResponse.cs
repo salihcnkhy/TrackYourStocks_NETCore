@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace Core.Base
 {
-    public interface IResponse
+
+
+    public class ErrorResponse : Response
     {
-        public bool IsSuccess { get; set; }
+        public string Message { get; set; }
+        public ExceptionType ExceptionType { get; set; }
     }
 }

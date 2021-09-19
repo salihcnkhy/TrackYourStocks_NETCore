@@ -9,10 +9,23 @@ namespace Core.Base
     [Route("api/[controller]")]
     public abstract class ApiController: ControllerBase
     {
-        public async Task<TResponse> SendAsyncRequest<TRequest, TResponse, THandler>(TRequest request) where TRequest : IRequest where TResponse : IResponse where THandler : IRequestHandler<TRequest, TResponse>, new()
+        public async Task<IResponse> SendAsyncRequest<TRequest, TResponse, THandler>(TRequest request) where TRequest : IRequest where TResponse : IResponse where THandler : IRequestHandler<TRequest, TResponse>, new()
         {
-            THandler handler = new THandler();
-            return await handler.Handle(request);
+            try
+            {
+                THandler handler = new THandler();
+                var response = await handler.Handle(request);
+                response.IsSuccess = true;
+                return response;
+            } 
+            catch(ErrorException e)
+            {
+                return new ErrorResponse { 
+                    ExceptionType = e.ExceptionType,
+                    Message = e.Message,
+                    IsSuccess = false 
+                };
+            }
         }
     }
 }

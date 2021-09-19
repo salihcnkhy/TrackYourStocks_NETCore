@@ -1,7 +1,6 @@
 ﻿using Core.Base;
 using Feature.Auth.Handler;
-using Feature.Auth.Model.SignIn;
-using Feature.Auth.Model.SignUp;
+using Feature.Auth.Model;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -14,15 +13,21 @@ namespace Feature.Auth.Controller
     public class AuthController : ApiController
     {
         [HttpPost("SignUp")]
-        public Task<SignUpResponse> SignUp([FromBody] SignUpRequest request)
+        public Task<IResponse> SignUp([FromBody] SignUpRequest request)
         {
             return SendAsyncRequest<SignUpRequest, SignUpResponse, SignUpHandler>(request);
         }
 
         [HttpPost("SignIn")]
-        public Task<SignInResponse> SignIn([FromBody] SignInRequest request)
+        public Task<IResponse> SignIn([FromBody] SignInRequest request)
         {
             return SendAsyncRequest<SignInRequest, SignInResponse, SignInHandler>(request);
+        }
+
+        [HttpPost("SendResetPasswordEmail")]
+        public Task<IResponse> SignIn([FromBody] SendResetPasswordEmailRequest request)
+        {
+            return SendAsyncRequest<SendResetPasswordEmailRequest, SendResetPasswordEmailResponse, SendResetPasswordEmailHandler>(request);
         }
     }
 }

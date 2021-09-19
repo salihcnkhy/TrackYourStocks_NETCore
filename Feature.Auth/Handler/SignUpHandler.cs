@@ -1,5 +1,5 @@
 ﻿using Core.Base;
-using Feature.Auth.Model.SignUp;
+using Feature.Auth.Model;
 using Feature.Auth.UseCase;
 using System;
 using System.Collections.Generic;

@@ -2,8 +2,7 @@
 using Core.Extensions;
 using Domain.Auth.Model;
 using Domain.Auth.Service;
-using Feature.Auth.Model.SignIn;
-using Feature.Auth.Model.SignUp;
+using Feature.Auth.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,6 +65,17 @@ namespace Feature.Auth.UseCase
 
                 return signInResponse;
             }
+        }
+
+        public async Task<SendResetPasswordEmailResponse> SendResetPasswordEmail(SendResetPasswordEmailRequest request)
+        {
+            var serviceRequest = new SendResetPasswordEmailServiceRequest
+            {
+                Email = request.Email 
+            };
+
+            await Api.SendResetPasswordEmail(serviceRequest);
+            return new SendResetPasswordEmailResponse();
         }
     }
 }

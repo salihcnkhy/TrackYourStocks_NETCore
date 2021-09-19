@@ -9,7 +9,6 @@ namespace Domain.Stocks.Model
 {
     public class GetStocksServiceResponse
     {
-        public bool Success { get; set; }
         public List<GetStocksServiceValueObject> ValueObjects { get; set; }
         public bool IsContinue { get; set; }
         public string ClientUpdateUUID { get; set; }

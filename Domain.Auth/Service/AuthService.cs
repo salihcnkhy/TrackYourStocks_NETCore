@@ -24,5 +24,12 @@ namespace Domain.Auth.Service
             var response = await service.SignIn(request.Email, request.Password);
             return new SignInServiceResponse() { UserID = response.ID, UserToken = response.LastSignedToken };
         }
+
+        public async Task<SendResetPasswordEmailServiceResponse> SendResetPasswordEmail(SendResetPasswordEmailServiceRequest request)
+        {
+            var service = new FirebaseService();
+            await service.SendResetPasswordEmail(request.Email);
+            return new SendResetPasswordEmailServiceResponse();
+        }
     }
 }

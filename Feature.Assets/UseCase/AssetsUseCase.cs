@@ -219,8 +219,8 @@ namespace Feature.Assets.UseCase
                 UserID = request.UserID,
                 UserToken = request.UserToken,
             };
-            var response = await Api.SellStock(serviceRequest);
-            return new SellStockResponse { IsSuccess = response.IsSuccess, TotalQuantity = afterSellStockQuantity };
+            await Api.SellStock(serviceRequest);
+            return new SellStockResponse { TotalQuantity = afterSellStockQuantity };
         }
     }
 }

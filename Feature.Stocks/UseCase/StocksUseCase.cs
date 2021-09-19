@@ -38,7 +38,6 @@ namespace Feature.Stocks.UseCase
 
             return new GetStockDetailResponse
             {
-                IsSuccess = true,
                 StocksValueObject = new GetStocksValueObject(response?.StocksServiceValueObject),
             };
         }
@@ -48,7 +47,6 @@ namespace Feature.Stocks.UseCase
             return new CheckStocksNeedUpdateResponse
             {
                 IsNeedUpdate = response,
-                IsSuccess = true,
             };
         }
     }

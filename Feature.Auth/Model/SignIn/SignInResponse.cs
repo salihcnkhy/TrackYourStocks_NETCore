@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Feature.Auth.Model.SignIn
+namespace Feature.Auth.Model
 {
     public class SignInResponse : Response
     {

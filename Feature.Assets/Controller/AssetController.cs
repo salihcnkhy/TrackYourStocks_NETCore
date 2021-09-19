@@ -9,19 +9,19 @@ namespace Feature.Assets.Controller
     public class AssetController : ApiController
     {
         [HttpPost("GetAssetInformation")]
-        public Task<GetAssetInformationResponse> GetAssetInformation([FromBody] GetAssetInformationRequest request)
+        public Task<IResponse> GetAssetInformation([FromBody] GetAssetInformationRequest request)
         {
             return SendAsyncRequest<GetAssetInformationRequest, GetAssetInformationResponse, GetAssetInformationHandler>(request);
         }
 
         [HttpPost("BuyStock")]
-        public Task<BuyStockResponse> BuyStock([FromBody] BuyStockRequest request)
+        public Task<IResponse> BuyStock([FromBody] BuyStockRequest request)
         {
             return SendAsyncRequest<BuyStockRequest, BuyStockResponse, BuyStockHandler>(request);
         }
 
         [HttpPost("SellStock")]
-        public Task<SellStockResponse> SellStock([FromBody] SellStockRequest request)
+        public Task<IResponse> SellStock([FromBody] SellStockRequest request)
         {
             return SendAsyncRequest<SellStockRequest, SellStockResponse, SellStockHandler>(request);
         }

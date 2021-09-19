@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 
 namespace Feature.Auth.Model
 {
-    public class SignInRequest : Request
+    public class SendResetPasswordEmailResponse : Response
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
     }
 }

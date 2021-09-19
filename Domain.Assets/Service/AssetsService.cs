@@ -58,7 +58,7 @@ namespace Domain.Assets.Service
                 UserID = request.UserID,
                 UserToken = request.UserToken,
             });
-            return new BuyStockServiceResponse { IsSuccess = true };
+            return new BuyStockServiceResponse();
         }
 
         public async Task<SellStockServiceResponse> SellStock(SellStockServiceRequest request)
@@ -72,7 +72,7 @@ namespace Domain.Assets.Service
                 UserID = request.UserID,
                 UserToken = request.UserToken,
             });
-            return new SellStockServiceResponse { IsSuccess = true };
+            return new SellStockServiceResponse();
         }
     }
 }

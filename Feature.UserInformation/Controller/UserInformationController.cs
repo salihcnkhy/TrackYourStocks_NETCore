@@ -14,25 +14,25 @@ namespace Feature.UserInformation.Controller
     public class UserInformationController : ApiController
     {
         [HttpPost("GetUserAlarmList")]
-        public Task<AlarmListResponse> GetUserAlarmList([FromBody] AlarmListRequest request)
+        public Task<IResponse> GetUserAlarmList([FromBody] AlarmListRequest request)
         {
             return SendAsyncRequest<AlarmListRequest, AlarmListResponse, GetAlarmListHandler>(request);
         }
 
         [HttpPost("GetUserNotificationList")]
-        public Task<NotificationListResponse> GetUserNotificationList([FromBody] NotificationListRequest request)
+        public Task<IResponse> GetUserNotificationList([FromBody] NotificationListRequest request)
         {
             return SendAsyncRequest<NotificationListRequest, NotificationListResponse, GetNotificationListHandler>(request);
         }
 
         [HttpPost("GetFavoriteList")]
-        public Task<GetFavoriteListResponse> GetFavoriteList([FromBody] GetFavoriteListRequest request)
+        public Task<IResponse> GetFavoriteList([FromBody] GetFavoriteListRequest request)
         {
             return SendAsyncRequest<GetFavoriteListRequest, GetFavoriteListResponse, GetFavoriteListHandler>(request);
         }
 
         [HttpPost("EditFavorite")]
-        public Task<EditFavoriteResponse> EditFavorite([FromBody] EditFavoriteRequest request)
+        public Task<IResponse> EditFavorite([FromBody] EditFavoriteRequest request)
         {
             return SendAsyncRequest<EditFavoriteRequest, EditFavoriteResponse, EditFavoriteHandler>(request);
         }

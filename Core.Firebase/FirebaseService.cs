@@ -1,4 +1,5 @@
 ﻿using Cache.Stocks;
+using Core.Base;
 using Core.Cache;
 using Core.Extensions;
 using Core.Firebase.Enum;
@@ -25,7 +26,7 @@ namespace Core.Firebase
 
             var appFetchSnapshot = await db.Collection(FirestoreCollection.Constants.Value()).Document("AppFetch").GetSnapshotAsync();
             FirebaseHelper.Shared.FirebaseDateStr = appFetchSnapshot.GetValue<string>("currentDay");
-            FirebaseHelper.Shared.AvailableDates = appFetchSnapshot.GetValue<List<string>>("available_date_list").Select(d => DateTime.Parse(d)).ToList();
+            FirebaseHelper.Shared.AvailableDates = appFetchSnapshot.GetValue<List<string>>("available_date_list").Where(d=> d.IsNotNullOrEmpty()).Select(d => DateTime.Parse(d)).ToList();
             FirebaseHelper.Shared.AvailableDates.Sort((x, y) => y.CompareTo(x));
 
             List<StockCacheModel> stocks = (await Task.WhenAll(snapshots.Documents.ToList().Select(async document =>
@@ -185,7 +186,6 @@ namespace Core.Firebase
         {
             FirestoreDb db = FirebaseHelper.Shared.Db;
             var auth = FirebaseHelper.Shared.Auth;
-
             var response = await auth.CreateUserWithEmailAndPasswordAsync(email, password);
             var generatedToken = Guid.NewGuid().ToString();
             // Token Update
@@ -210,16 +210,10 @@ namespace Core.Firebase
             return new UserFirebaseModel() { ID = response.User.LocalId, LastSignedToken = generatedToken };
         }
 
-        public async Task<List<PortfolioFirebaseModel>> GetUserPortfolioList(FirestoreGeneralRequest request)
+        public async Task SendResetPasswordEmail(string email)
         {
-            await CheckUserSignToken(request);
-
-            FirestoreDb db = FirebaseHelper.Shared.Db;
-            var portfolioRef = db.Collection(FirestoreCollection.Users.Value()).Document(request.UserID).Collection(FirestoreCollection.Portfolio.Value())
-                .WhereGreaterThan("bought_stock_quantity", 0);
-            var portfolioStockSnapshot = await portfolioRef.GetSnapshotAsync();
-            List<PortfolioFirebaseModel> portfolioStockList = portfolioStockSnapshot.Documents.ToList().Select(doc => doc.ConvertTo<PortfolioFirebaseModel>()).ToList();
-            return portfolioStockList;
+            var auth = FirebaseHelper.Shared.Auth;
+            await auth.SendPasswordResetEmailAsync(email);
         }
 
         /// <summary>
@@ -235,8 +229,8 @@ namespace Core.Firebase
             {
                 userFirebaseModel = await GetUser(request);
             }
-            if (userFirebaseModel == null) throw new Exception(); // TODO: Throw UserNotFound Exception
-            if (!userFirebaseModel.LastSignedToken.Equals(request.UserToken)) throw new Exception(); // TODO: Throw TokenUnvalid Exception
+            if (userFirebaseModel == null) throw new ErrorException(ExceptionType.UserNotFound);
+            if (!userFirebaseModel.LastSignedToken.Equals(request.UserToken)) throw new ErrorException(ExceptionType.TokenFailed);
         }
         #endregion
 
@@ -364,6 +358,19 @@ namespace Core.Firebase
 
             await userStockRef.UpdateAsync(stockUpdateDict);
             await marketHistoryRef.AddAsync(stockSellRecordDict);
+        }
+
+
+        public async Task<List<PortfolioFirebaseModel>> GetUserPortfolioList(FirestoreGeneralRequest request)
+        {
+            await CheckUserSignToken(request);
+
+            FirestoreDb db = FirebaseHelper.Shared.Db;
+            var portfolioRef = db.Collection(FirestoreCollection.Users.Value()).Document(request.UserID).Collection(FirestoreCollection.Portfolio.Value())
+                .WhereGreaterThan("bought_stock_quantity", 0);
+            var portfolioStockSnapshot = await portfolioRef.GetSnapshotAsync();
+            List<PortfolioFirebaseModel> portfolioStockList = portfolioStockSnapshot.Documents.ToList().Select(doc => doc.ConvertTo<PortfolioFirebaseModel>()).ToList();
+            return portfolioStockList;
         }
 
         public async Task<PortfolioFirebaseModel> GetUserPortfolioStock(UserPorfolioStockRequest request)
