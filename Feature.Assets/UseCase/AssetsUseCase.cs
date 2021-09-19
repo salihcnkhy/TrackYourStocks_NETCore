@@ -137,6 +137,8 @@ namespace Feature.Assets.UseCase
                     return new AssetStockInformationModel
                     {
                         Code = portfolioStock.Code,
+                        FullName = currentStock.FullName,
+                        ShortName = currentStock.ShortName,
                         Quantity = portfolioStock.StockQuantity,
                         UnitPrice = Math.Round(portfolioStock.UnitPrice, 2, MidpointRounding.AwayFromZero),
                         ProfitRate = Math.Round(100 * ((currentStock.CurrentSelling / portfolioStock.UnitPrice) - 1), 2, MidpointRounding.AwayFromZero),

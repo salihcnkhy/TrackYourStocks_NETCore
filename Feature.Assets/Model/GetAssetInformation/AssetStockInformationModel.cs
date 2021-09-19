@@ -10,6 +10,8 @@ namespace Feature.Assets.Model
     public class AssetStockInformationModel
     {
         public string Code { get; set; }
+        public string FullName { get; set; }
+        public string ShortName { get; set; }
         public int Quantity { get; set; }
         public double UnitPrice { get; set; }
         public double BoughtPrice { get; set; }  // UnitPrice * StockQuantity
