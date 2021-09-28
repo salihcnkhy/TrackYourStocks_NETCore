@@ -8,5 +8,6 @@ namespace Core.Base
 {
     public interface IResponse
     {
+        public bool IsSuccess { get; set; }
     }
 }

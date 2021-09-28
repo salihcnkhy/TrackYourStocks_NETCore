@@ -13,7 +13,7 @@ namespace Feature.Stocks.Handler
     {
         public Task<GetStocksResponse> Handle(GetStocksRequest request)
         {
-            return Task.FromResult(UseCase.GetAllCachedStocks());
+            return UseCase.GetAllCachedStocks(request);
         }
     }
 }

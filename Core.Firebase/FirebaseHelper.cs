@@ -9,9 +9,13 @@ namespace Core.Firebase
     public class FirebaseHelper
     {
         private static FirebaseHelper _shared;
+
         private bool IsFirstRequest = true;
         public FirestoreDb Db;
         public FirebaseAuthProvider Auth;
+        public string LastUpdateUUID;
+        public string FirebaseDateStr;
+        public List<DateTime> AvailableDates;
         public static FirebaseHelper Shared
         {
             get
@@ -33,7 +37,7 @@ namespace Core.Firebase
         {
             DocumentReference docRef = Db.Collection("Constants").Document("AppFetch");
 
-            FirestoreChangeListener listener = docRef.Listen(snapshot =>
+            FirestoreChangeListener listener = docRef.Listen(async snapshot =>
             {
                 if (snapshot.Exists)
                 {
@@ -41,9 +45,11 @@ namespace Core.Firebase
                     bool appFetched = (bool)dict["appFetched"];
                     if (appFetched || IsFirstRequest)
                     {
+                        await snapshot.Reference.UpdateAsync(new Dictionary<string, object> { { "appFetched", false } });
+                        Console.WriteLine("Cache Fetched");
                         IsFirstRequest = false;
                         var service = new FirebaseService();
-                        service.GetStocks();
+                        service.FetchStocks();
                     }
                 }
             });

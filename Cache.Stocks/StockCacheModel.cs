@@ -17,5 +17,13 @@ namespace Cache.Stocks
         public double CurrentChangeRate { get; set; }
         public double DayMax { get; set; }
         public double DayMin { get; set; }
+        public List<StockDayCacheModel> StockDayCacheModelList {get; set; }
+    }
+
+    public class StockDayCacheModel
+    {
+        public double LastBuying { get; set; }
+        public double LastSelling { get; set; }
+        public string Day { get; set; }
     }
 }

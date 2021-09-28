@@ -8,6 +8,5 @@ namespace Core.Base
 {
     public abstract class Request : IRequest
     {
-        public string UserToken { get; set; }
     }
 }

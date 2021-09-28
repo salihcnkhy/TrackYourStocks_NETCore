@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Feature.Auth.Model.SignUp
+namespace Feature.Auth.Model
 {
     public class SignUpRequest : Request
     {
+        public string UserName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
     }

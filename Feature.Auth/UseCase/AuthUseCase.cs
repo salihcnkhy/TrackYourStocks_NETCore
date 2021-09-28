@@ -2,8 +2,7 @@
 using Core.Extensions;
 using Domain.Auth.Model;
 using Domain.Auth.Service;
-using Feature.Auth.Model.SignIn;
-using Feature.Auth.Model.SignUp;
+using Feature.Auth.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,29 +19,63 @@ namespace Feature.Auth.UseCase
             {
                 SignUpServiceRequest signUpServiceRequest = new SignUpServiceRequest() { Email = request.Email, Password = request.Password };
                 var apiResponse = await Api.SignUp(signUpServiceRequest);
-                SignUpResponse signUpResponse = new SignUpResponse() { Success = apiResponse.UserID.IsNotNullOrEmpty(), UserID = apiResponse.UserID, UserToken = apiResponse.UserToken };
+          
+                SignUpResponse signUpResponse = new SignUpResponse() 
+                { 
+                    IsSuccess = apiResponse.UserID.IsNotNullOrEmpty(),
+                    UserID = apiResponse.UserID, 
+                    UserToken = apiResponse.UserToken 
+                };
+
                 return signUpResponse;
             }
-            catch(Exception e)
+            catch(Firebase.Auth.FirebaseAuthException e)
             {
+                SignUpResponse signUpResponse = new SignUpResponse()
+                {
+                    IsSuccess = false,
+                    ErrorReason = e.Reason
+                };
 
-                return null;
+            return signUpResponse;
             }
         }
+
         public async Task<SignInResponse> SignIn(SignInRequest request)
         {
             try
             {
                 SignInServiceRequest signInServiceRequest = new SignInServiceRequest() { Email = request.Email, Password = request.Password };
                 var apiResponse = await Api.SignIn(signInServiceRequest);
-                SignInResponse signInResponse = new SignInResponse() { Success = apiResponse.UserID.IsNotNullOrEmpty(), UserID = apiResponse.UserID, UserToken = apiResponse.UserToken };
+                SignInResponse signInResponse = new SignInResponse() 
+                { 
+                    IsSuccess = apiResponse.UserID.IsNotNullOrEmpty(), 
+                    UserID = apiResponse.UserID,
+                    UserToken = apiResponse.UserToken
+                };
                 return signInResponse;
             }
-            catch (Exception e)
+            catch (Firebase.Auth.FirebaseAuthException e)
             {
+                SignInResponse signInResponse = new SignInResponse()
+                {
+                    IsSuccess = false,
+                    ErrorReason = e.Reason
+                };
 
-                return null;
+                return signInResponse;
             }
+        }
+
+        public async Task<SendResetPasswordEmailResponse> SendResetPasswordEmail(SendResetPasswordEmailRequest request)
+        {
+            var serviceRequest = new SendResetPasswordEmailServiceRequest
+            {
+                Email = request.Email 
+            };
+
+            await Api.SendResetPasswordEmail(serviceRequest);
+            return new SendResetPasswordEmailResponse();
         }
     }
 }

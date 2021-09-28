@@ -11,13 +11,14 @@ namespace Feature.Stocks.Model
     public class GetStocksResponse : Response
     {
         public bool IsContinue { get; set; }
-        public List<GetStocksValueObject> ValueObjects { get; set; }
+        public List<GetStocksValueObject> StockList { get; set; }
+        public string ClientUpdateUUID { get; set; }
 
         public GetStocksResponse(GetStocksServiceResponse serviceResponse)
         {
-            ValueObjects = serviceResponse.ValueObjects.Select(element => new GetStocksValueObject(element)).ToList();
+            StockList = serviceResponse.ValueObjects.Select(element => new GetStocksValueObject(element)).ToList();
             IsContinue = serviceResponse.IsContinue;
-            Success = serviceResponse.Success;
+            ClientUpdateUUID = serviceResponse.ClientUpdateUUID;
         }
     }
 }

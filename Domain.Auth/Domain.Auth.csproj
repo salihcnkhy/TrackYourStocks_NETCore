@@ -1,11 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\Core.Firebase\Core.Firebase.csproj" />
+    <ProjectReference Include="..\Core.Firebase\Firebase.Service.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
 

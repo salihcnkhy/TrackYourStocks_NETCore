@@ -1,23 +1,37 @@
 ﻿using Core.Base;
 using Domain.Stocks.Helper;
 using Domain.Stocks.Model;
+using System.Threading.Tasks;
 
 namespace Domain.Stocks.Service
 {
     public class StocksService: ApiService
     {
-        public GetStocksServiceResponse GetCachedStocks(GetStocksServiceRequest request)
+        public async Task<GetStocksServiceResponse> GetAllCachedStocks(GetStocksServiceRequest request)
         {
             StocksHelper stocksHelper = new StocksHelper();
-            var cachedStocks = stocksHelper.GetCachedStocks(request);
+            var cachedStocks = await stocksHelper.GetCachedStocks(request);
             return cachedStocks;
         }
 
-        public GetStocksServiceResponse GetAllCachedStocks()
+        public async Task<GetStockDayInfoServiceResponse> GetStockPastDateInformation(GetStockDayInfoServiceRequest request)
         {
             StocksHelper stocksHelper = new StocksHelper();
-            var cachedStocks = stocksHelper.GetCachedStocks();
-            return cachedStocks;
+            var stockDayInfo = await stocksHelper.GetStockDayInformation(request);
+            return stockDayInfo;
+        }
+
+        public async Task<GetStockDetailServiceResponse> GetStockDetail(GetStockDetailServiceRequest request)
+        {
+            StocksHelper stocksHelper = new StocksHelper();
+            var response = await stocksHelper.GetStockDetail(request);
+            return response;
+        }
+
+        public bool CheckStockListNeedUpdate(string clientLastUpdate)
+        {
+            StocksHelper stocksHelper = new StocksHelper();
+            return stocksHelper.CheckStockListNeedUpdate(clientLastUpdate);
         }
     }
 }
