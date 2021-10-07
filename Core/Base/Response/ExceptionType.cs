@@ -8,8 +8,10 @@ namespace Core.Base
 {
     public enum ExceptionType
     {
+        AuthInformationsMissing,
         TokenFailed,
         UserNotFound,
+        NotEnoughtStocksToSell
     }
 
     public static class ExceptionMessages
@@ -18,10 +20,15 @@ namespace Core.Base
         {
             switch (type)
             {
+                case ExceptionType.AuthInformationsMissing:
+                    return "Şu anda işleminizi gerçekleştiremiyoruz. (Code:" + 0.ToString() + ")";
                 case ExceptionType.UserNotFound:
                     return "Kullanıcı Bulunamadı.";
                 case ExceptionType.TokenFailed:
                     return "Hesabınız başka bir cihazda açık görünüyor. Lütfen tekrar giriş yapınız.";
+                case ExceptionType.NotEnoughtStocksToSell:
+                    return "Sahip olduğunuz hisse miktarından fazla miktarda satış işlemi yapamazsınız.";
+
             }
             return "Bir hata oluştu. Daha sonra tekrar deneyiniz.";
         }

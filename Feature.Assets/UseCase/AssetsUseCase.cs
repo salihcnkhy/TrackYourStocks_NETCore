@@ -207,7 +207,7 @@ namespace Feature.Assets.UseCase
             
             if(porfolioStock == null || porfolioStock.StockQuantity < request.LotQuantity)
             {
-                throw new Exception();
+                throw new ErrorException(ExceptionType.NotEnoughtStocksToSell);
             }
 
             var afterSellStockQuantity = porfolioStock.StockQuantity - request.LotQuantity ;
