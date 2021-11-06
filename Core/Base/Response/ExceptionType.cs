@@ -8,6 +8,7 @@ namespace Core.Base
 {
     public enum ExceptionType
     {
+        undefined = -1,
         AuthInformationsMissing,
         TokenFailed,
         UserNotFound,

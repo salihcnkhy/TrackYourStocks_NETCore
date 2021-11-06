@@ -3,6 +3,7 @@ using Core.Extensions;
 using Domain.Auth.Model;
 using Domain.Auth.Service;
 using Feature.Auth.Model;
+using Firebase.Service.Extension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,25 +20,19 @@ namespace Feature.Auth.UseCase
             {
                 SignUpServiceRequest signUpServiceRequest = new SignUpServiceRequest() { Email = request.Email, Password = request.Password };
                 var apiResponse = await Api.SignUp(signUpServiceRequest);
-          
-                SignUpResponse signUpResponse = new SignUpResponse() 
-                { 
+
+                SignUpResponse signUpResponse = new SignUpResponse()
+                {
                     IsSuccess = apiResponse.UserID.IsNotNullOrEmpty(),
-                    UserID = apiResponse.UserID, 
-                    UserToken = apiResponse.UserToken 
+                    UserID = apiResponse.UserID,
+                    UserToken = apiResponse.UserToken
                 };
 
                 return signUpResponse;
             }
-            catch(Firebase.Auth.FirebaseAuthException e)
+            catch (Firebase.Auth.FirebaseAuthException e)
             {
-                SignUpResponse signUpResponse = new SignUpResponse()
-                {
-                    IsSuccess = false,
-                    ErrorReason = e.Reason
-                };
-
-            return signUpResponse;
+                throw new ErrorException(e.Reason.GetExceptionMessage());
             }
         }
 
@@ -47,9 +42,9 @@ namespace Feature.Auth.UseCase
             {
                 SignInServiceRequest signInServiceRequest = new SignInServiceRequest() { Email = request.Email, Password = request.Password };
                 var apiResponse = await Api.SignIn(signInServiceRequest);
-                SignInResponse signInResponse = new SignInResponse() 
-                { 
-                    IsSuccess = apiResponse.UserID.IsNotNullOrEmpty(), 
+                SignInResponse signInResponse = new SignInResponse()
+                {
+                    IsSuccess = apiResponse.UserID.IsNotNullOrEmpty(),
                     UserID = apiResponse.UserID,
                     UserToken = apiResponse.UserToken
                 };
@@ -57,13 +52,7 @@ namespace Feature.Auth.UseCase
             }
             catch (Firebase.Auth.FirebaseAuthException e)
             {
-                SignInResponse signInResponse = new SignInResponse()
-                {
-                    IsSuccess = false,
-                    ErrorReason = e.Reason
-                };
-
-                return signInResponse;
+                throw new ErrorException(e.Reason.GetExceptionMessage());
             }
         }
 
@@ -71,7 +60,7 @@ namespace Feature.Auth.UseCase
         {
             var serviceRequest = new SendResetPasswordEmailServiceRequest
             {
-                Email = request.Email 
+                Email = request.Email
             };
 
             await Api.SendResetPasswordEmail(serviceRequest);
