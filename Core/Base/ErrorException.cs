@@ -15,5 +15,10 @@ namespace Core.Base
         {
             ExceptionType = exceptionType;
         }
+
+        public ErrorException(string message) : base(message)
+        {
+            ExceptionType = ExceptionType.undefined;
+        }
     }
 }

@@ -11,8 +11,17 @@ namespace Core.Base
     {
         public async Task<IResponse> SendAsyncRequest<TRequest, TResponse, THandler>(TRequest request) where TRequest : IRequest where TResponse : IResponse where THandler : IRequestHandler<TRequest, TResponse>, new()
         {
+
             try
             {
+                if (request is AuthRequiredRequest)
+                {
+                    var authRequiredRequest = request as AuthRequiredRequest;
+                    var shouldThrow = authRequiredRequest.UserID == null && authRequiredRequest.UserToken == null;
+                    if (shouldThrow)
+                        throw new ErrorException(ExceptionType.AuthInformationsMissing);
+                }
+
                 THandler handler = new THandler();
                 var response = await handler.Handle(request);
                 response.IsSuccess = true;

@@ -38,7 +38,6 @@ namespace Feature.UserInformation.UseCase
             var responseList = await Api.GetAlarmList(new AlarmRequest { UserID = request.UserID, UserToken = request.UserToken });
             var alarmListResponse = new AlarmListResponse
             {
-                IsSuccess = true,
                 AlarmList = responseList.Select(a => new AlarmModel
                 {
                     Code = a.Code,
@@ -57,7 +56,6 @@ namespace Feature.UserInformation.UseCase
             var responseList = await Api.GetFavoriteList(new GetFavoriteListServiceRequest { UserID = request.UserID, UserToken = request.UserToken });
             var favoriteListResponse = new GetFavoriteListResponse
             {
-                IsSuccess = true,
                 FavoriteList = responseList.FavoriteList,
             };
 
@@ -67,11 +65,7 @@ namespace Feature.UserInformation.UseCase
         public async Task<EditFavoriteResponse> EditFavorite(EditFavoriteRequest request)
         {
             await Api.EditFavorite(new EditFavoriteServiceRequest { Code = request.Code, UserID = request.UserID, UserToken = request.UserToken });
-            var editFavorite = new EditFavoriteResponse
-            {
-                IsSuccess = true,
-            };
-
+            var editFavorite = new EditFavoriteResponse();
             return editFavorite;
         }
     }
