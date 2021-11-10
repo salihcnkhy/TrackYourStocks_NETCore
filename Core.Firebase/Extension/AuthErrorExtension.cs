@@ -26,6 +26,12 @@ namespace Firebase.Service.Extension
                 case AuthErrorReason.WeakPassword:
                     message = "Zayıf şifre. Lütfen büyük-küçük harf ve sayı kullanınız.";
                     break;
+                case AuthErrorReason.WrongPassword:
+                    message = "E-mail veya şifre yanlış. Lütfen tekrar deneyiniz.";
+                    break;
+                case AuthErrorReason.UnknownEmailAddress:
+                    message = "E-mail veya şifre yanlış. Lütfen tekrar deneyiniz.";
+                    break;
             }
             return message;
         }
