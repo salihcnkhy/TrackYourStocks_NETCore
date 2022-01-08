@@ -10,15 +10,17 @@ namespace Core.Base
     public class ErrorException : Exception
     {
         public ExceptionType ExceptionType { get; set; }
-
-        public ErrorException(ExceptionType exceptionType) : base(exceptionType.GetMessage())
+        public SubErrorType SubErrorType { get; set; }
+        public ErrorException(ExceptionType exceptionType, SubErrorType subErrorType = SubErrorType.defaultCode) : base(exceptionType.GetMessage(subErrorType))
         {
             ExceptionType = exceptionType;
+            SubErrorType = subErrorType;
         }
 
-        public ErrorException(string message) : base(message)
+        public ErrorException(string message, SubErrorType subErrorType = SubErrorType.defaultCode) : base(message)
         {
             ExceptionType = ExceptionType.undefined;
+            SubErrorType = subErrorType;
         }
     }
 }

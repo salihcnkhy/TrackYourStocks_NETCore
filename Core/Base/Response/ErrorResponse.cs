@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 namespace Core.Base
 {
 
-
     public class ErrorResponse : Response
     {
         public string Message { get; set; }
+        public string SubErrorType { get; set; }
         public ExceptionType ExceptionType { get; set; }
     }
 }

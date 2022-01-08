@@ -26,7 +26,7 @@ namespace Core.Firebase
 
             var appFetchSnapshot = await db.Collection(FirestoreCollection.Constants.Value()).Document("AppFetch").GetSnapshotAsync();
             FirebaseHelper.Shared.FirebaseDateStr = appFetchSnapshot.GetValue<string>("currentDay");
-            FirebaseHelper.Shared.AvailableDates = appFetchSnapshot.GetValue<List<string>>("available_date_list").Where(d=> d.IsNotNullOrEmpty()).Select(d => DateTime.Parse(d)).ToList();
+            FirebaseHelper.Shared.AvailableDates = appFetchSnapshot.GetValue<List<string>>("available_date_list").Where(d => d.IsNotNullOrEmpty()).Select(d => DateTime.Parse(d)).ToList();
             FirebaseHelper.Shared.AvailableDates.Sort((x, y) => y.CompareTo(x));
 
             List<StockCacheModel> stocks = (await Task.WhenAll(snapshots.Documents.ToList().Select(async document =>
@@ -45,13 +45,24 @@ namespace Core.Firebase
             var dayRef = db.Collection(FirestoreCollection.Stokcs.Value()).Document(request.Code).Collection(FirestoreCollection.Days.Value());
             var query = dayRef.Document(request.Date);
             var snapshot = await query.GetSnapshotAsync();
-            return snapshot.ConvertTo<StockDayFirebaseModel>();
+            var response = snapshot.ConvertTo<StockDayFirebaseModel>();
+            if (response == null) throw new ErrorException(ExceptionType.other, SubErrorType.stockDayInformationWasNull);
+            return response;
         }
 
         public async Task<List<StockCacheModel>> GetCachedStocks(FirestoreGeneralRequest request)
         {
             await CheckUserSignToken(request);
-            return StocksCache.Shared.CachedStocks;
+            var stocks = StocksCache.Shared.CachedStocks;
+            if (stocks == null)
+            {
+                throw new ErrorException(ExceptionType.other, SubErrorType.stockListWasNull);
+            }
+            else if (stocks.Count == 0)
+            {
+                throw new ErrorException(ExceptionType.other, SubErrorType.stockListWasEmpty);
+            }
+            return stocks;
         }
 
         public async Task<StockCacheModel> GetStockDetail(StockDetailRequest request)
