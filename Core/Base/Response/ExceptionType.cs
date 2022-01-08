@@ -8,6 +8,7 @@ namespace Core.Base
 {
     public enum ExceptionType
     {
+        other = -2, // should have subError code
         undefined = -1,
         AuthInformationsMissing,
         TokenFailed,
@@ -15,9 +16,17 @@ namespace Core.Base
         NotEnoughtStocksToSell
     }
 
+    public enum SubErrorType
+    {
+        defaultCode = -1,
+        stockListWasNull,
+        stockListWasEmpty,
+        stockDayInformationWasNull,
+    }
+
     public static class ExceptionMessages
     {
-        public static string GetMessage(this ExceptionType type)
+        public static string GetMessage(this ExceptionType type, SubErrorType subErrorType = SubErrorType.defaultCode)
         {
             switch (type)
             {
@@ -29,9 +38,10 @@ namespace Core.Base
                     return "Hesabınız başka bir cihazda açık görünüyor. Lütfen tekrar giriş yapınız.";
                 case ExceptionType.NotEnoughtStocksToSell:
                     return "Sahip olduğunuz hisse miktarından fazla miktarda satış işlemi yapamazsınız.";
-
+                case ExceptionType.other:
+                    return "Şu anda işleminizi gerçekleştiremiyoruz.\n(Hata kodu:" + ((int)subErrorType).ToString() + ")";
             }
-            return "Bir hata oluştu. Daha sonra tekrar deneyiniz.";
+            return "Şu anda işleminizi gerçekleştiremiyoruz. Lütfen daha sonra tekrar deneyiniz.";
         }
     }
 }

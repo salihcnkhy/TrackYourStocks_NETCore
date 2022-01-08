@@ -32,6 +32,7 @@ namespace Core.Base
                 return new ErrorResponse { 
                     ExceptionType = e.ExceptionType,
                     Message = e.Message,
+                    SubErrorType = ((int)e.SubErrorType).ToString(),
                     IsSuccess = false 
                 };
             }

@@ -15,17 +15,13 @@ namespace Domain.Stocks.Helper
             var firebaseService = new FirebaseService();
             var firebaseRequest = new FirestoreGeneralRequest { UserID = request.UserID, UserToken = request.UserToken };
             var cachedStocks = await firebaseService.GetCachedStocks(firebaseRequest);
-            GetStocksServiceResponse response = null;
-            if (cachedStocks != null)
+            GetStocksServiceResponse response = new GetStocksServiceResponse()
             {
-                response = new GetStocksServiceResponse()
-                {
-                    ValueObjects = cachedStocks.Select(s => new GetStocksServiceValueObject(s)).ToList(),
-                    ClientUpdateUUID = FirebaseHelper.Shared.LastUpdateUUID,
-                };
-                if (request != null && request.PageSize > 0)
-                    response = GetFilteredResponse(request, response);
-            }
+                ValueObjects = cachedStocks.Select(s => new GetStocksServiceValueObject(s)).ToList(),
+                ClientUpdateUUID = FirebaseHelper.Shared.LastUpdateUUID,
+            };
+            if (request != null && request.PageSize > 0)
+                response = GetFilteredResponse(request, response);
             return response;
         }
 
@@ -39,7 +35,6 @@ namespace Domain.Stocks.Helper
             };
 
             var response = await firebaseService.GetStockDayInformation(stockInfoRequest);
-            if (response == null) return null; // TODO: if returns null try next day maybe??
             return new GetStockDayInfoServiceResponse
             {
                 Day = response.Day,
